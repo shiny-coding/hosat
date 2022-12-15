@@ -1,0 +1,37 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	display: flex;
+}
+#board {
+	display: flex;
+	flex-direction: column;
+}
+.row {
+	display: flex;
+}
+.cell {
+	border: 0.1vmin solid #cdcdcd;
+	background-color: #dcdcdc;	
+	box-sizing: border-box;
+	user-select: none;
+}
+
+.hero {
+	position: absolute;
+	z-index: 1;
+	box-sizing: border-box;
+	font-size: 1.5vmin;
+	text-align: center;
+	background-size: 100%;
+}
+.team1 {
+	border: 0.5vmin solid red;
+}
+.team2 {
+	border: 0.5vmin solid blue;
+}
