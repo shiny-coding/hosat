@@ -20,6 +20,9 @@ html, body {
 	box-sizing: border-box;
 	user-select: none;
 }
+.available-cell {
+	background-color: green;
+}
 
 .hero {
 	position: absolute;

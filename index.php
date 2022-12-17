@@ -11,11 +11,13 @@
 <body>
     <div id="container">
         <div id="board"></div>
+        <div id="info-panel">
+            <div id="hero-parameters"></div>
+        </div>
     </div>
-    <script src="utilities.js"></script> 
-    <script src="globals.js"></script> 
-    <script src="units.js"></script> 
+    <script src="utilities.js"></script>
     <script src="functions.js"></script>
+    <script src="events.js"></script>
     <script src="initialization.js"></script>    
     <script src="main.js"></script> 
 </body>
