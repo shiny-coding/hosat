@@ -19,9 +19,14 @@ html, body {
 	background-color: #dcdcdc;	
 	box-sizing: border-box;
 	user-select: none;
+	font-size: small; 
 }
 .available-cell {
 	background-color: green;
+}
+.path-cell {
+	border-color: black;
+	background-color: lightgreen;	
 }
 
 .hero {

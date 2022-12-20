@@ -1,16 +1,29 @@
-function onHeroClick( e ) {
-    let $hero = $( this );
-    let hero = getHeroByElement( $hero );
+function onCellClick( e ) {
+    if ( isSelectionBlocked ) return;
 
-    choosenHeroId = hero.id;
-    describeHero( choosenHeroId );
-    calculateHeroPathMap( choosenHeroId );
-    drawHeroPathMap( choosenHeroId );
-}
-
-function onCellClick() {
-    // if ( selectionBlocked ) return;
+    $cells.removeClass( 'path-cell' );
         
     let $cell = $( this ); 
-    cell = getCell( $cell ); 
+
+    if ( isCellAvailable( $cell ) ) {
+        let cell = getCell( $cell ); 
+
+        // choosenCellId = cell.id;
+        $cell.addClass( 'path-cell' ); //TODO remove?
+        
+        drawMovePath( cell.indexes, getUnitById( choosenUnitId ).indexes );
+    }
+
+}
+
+function onUnitClick( e ) {
+    $cells.removeClass( 'available-cell' );
+
+    let $unit = $( this );
+    let unit = getUnitByElement( $unit );
+
+    choosenUnitId = unit.id;
+    describeUnit( choosenUnitId );
+    // calculatePathMap( choosenUnitId );
+    drawPathMap( choosenUnitId );
 }

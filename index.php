@@ -16,6 +16,7 @@
         </div>
     </div>
     <script src="utilities.js"></script>
+    <script src="libraries.js"></script>
     <script src="functions.js"></script>
     <script src="events.js"></script>
     <script src="initialization.js"></script>    
