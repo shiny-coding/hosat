@@ -12,7 +12,7 @@
     <div id="container">
         <div id="board"></div>
         <div id="info-panel">
-            <div id="hero-parameters"></div>
+            <div id="unit-parameters"></div>
         </div>
     </div>
     <script src="utilities.js"></script>

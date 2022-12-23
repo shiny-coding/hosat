@@ -58,16 +58,16 @@ function setHeroBackground( id ) {
 }
 
 function describeUnit( unitId ) {
-    let hero = getUnitById( unitId );
-    let heroParameters = `
-        ${hero.name}<br>
-        Health Points: ${hero.currentHP} / ${hero.baseHP}<br>
-        Action Points: ${hero.currentAP} / ${hero.baseAP}<br>        
-        Damage: ${hero.currentDamage} / ${hero.baseDamage}<br>   
-        Attack Distance: ${hero.currentAttackDistance} / ${hero.baseAttackDistance}
+    let unit = getUnitById( unitId );
+    let unitParameters = `
+        ${unit.name}<br>
+        Health Points: ${unit.currentHP} / ${unit.baseHP}<br>
+        Action Points: ${unit.currentAP} / ${unit.baseAP}<br>        
+        Damage: ${unit.currentDamage} / ${unit.baseDamage}<br>   
+        Attack Distance: ${unit.currentAttackDistance} / ${unit.baseAttackDistance}
     `;
 
-    $( '#hero-parameters' ).html( heroParameters );   
+    $( '#unit-parameters' ).html( unitParameters );   
 }
 
 function calculatePathMap( unitId ) {
@@ -111,6 +111,8 @@ function calculatePathMap( unitId ) {
 }
 
 function drawPathMap( unitId ) {    
+    // $cells.removeClass( 'path-cell' ); 
+
     calculatePathMap( unitId );
 
     for ( let cell of cells ) {
@@ -127,7 +129,7 @@ function isCellAvailable( $cell ) {
 }
 
 function calculateMovePath( choosenCellIndexes, choosenUnitIndexes ) {
-    let resultPath = [];
+    let path = [];
     let preferHorizontalMovement = Math.abs( choosenCellIndexes.x - choosenUnitIndexes.x ) < Math.abs( choosenCellIndexes.y - choosenUnitIndexes.y );
     let current = choosenCellIndexes;
     let distance = pathMap[ choosenCellIndexes.x ][ choosenCellIndexes.y ];    
@@ -156,43 +158,33 @@ function calculateMovePath( choosenCellIndexes, choosenUnitIndexes ) {
         }
 
         current = bestCandidate;
-        resultPath.push( bestCandidate );
+        path.push( bestCandidate );
         currentDistance--;
 
         if ( currentDistance < 0 ) break;
     }
     
-    resultPath.reverse();
-    resultPath.shift();
-    resultPath.push( choosenCellIndexes );    
+    path.reverse();
+    path.shift();
+    path.push( choosenCellIndexes );    
 
-    return resultPath;
+    return path;
 }
 
 function drawMovePath( choosenCellIndexes, choosenUnitIndexes ) {
-    let resultPath = calculateMovePath( choosenCellIndexes, choosenUnitIndexes );
+    let path = calculateMovePath( choosenCellIndexes, choosenUnitIndexes );
 
-    for ( let indexes of resultPath ) {
+    for ( let indexes of path ) {
         getCellElementByIndexes( indexes ).addClass( 'path-cell' ); 
     }
 }
 
-function animateMoveByPath( path, step ) {
-    if ( step == path.length ) {
-        isSelectionBlocked = false;
-        return;
-    }
-
-    // let choosenUnit = 
-    let nextCellIndexes = path[ step ];   
-    
-    if ( step == path.length - 1 ) {
-        choosenUnit.$element.removeClass( 'chosen-hero' ); 
-        choosenUnit.indexes = nextCellIndexes;
-    }
-
+function animateMoveByPath( path ) {
+    let choosenUnit = getUnitById( choosenUnitId ); 
+    let nextCellIndexes = path.shift();
     let $cell = $( `#cell-${nextCellIndexes.x}-${nextCellIndexes.y}` );
     let cellOffset = $cell.offset();  
+    choosenUnit.currentAP--;
 
     choosenUnit.$element.animate( {
         left: cellOffset.left,
@@ -201,12 +193,17 @@ function animateMoveByPath( path, step ) {
         duration: 500,
         easing: "linear",
         done: function() {
-            choosenUnit.indexes = getCellIndexes( $cell );
-            drawPathMap(); 
-            if ( step < path.length - 1 ) choosenUnit.currentAP--;
-            describeUnit();
-            $cell.removeClass( 'path-cell' );            
-            moveByPath( path, step + 1 );  
+            choosenUnit.indexes = nextCellIndexes;
+            $cells.removeClass( 'available-cell' ); 
+            drawPathMap( choosenUnit.id ); 
+            describeUnit( choosenUnit.id );               
+            $cell.removeClass( 'path-cell' ); 
+
+            if ( path.length > 0 ) {                    
+                animateMoveByPath( path );                    
+            } else {
+                isSelectionBlocked = false;
+            }                  
         }
-    } );    
+    } ); 
 }
