@@ -39,7 +39,7 @@ function getUnitClone( unitId ) {
 }
 
 function setCellOrHeroElementSize( $cellOrHero ) {
-    let size = vmin2px( 100 / BOARD_SIZE_Y ); 
+    let size = vmin2px( 100 / board.rows ); 
     $cellOrHero.css( 'width', size + 'px' );
     $cellOrHero.css( 'height', size + 'px' );
 }
@@ -52,7 +52,10 @@ function setHeroElementPosition( heroIndexes, heroId ) {
 function setHeroBackground( id ) {    
     for ( let unit of units ) {
         if ( unit.type == 'hero' && id == unit.id ) {
-            $( '#hero-' + id ).css( 'background-image', 'url(' + unit.imagePath + ')' );
+            let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.jpg)';
+            $( '#hero-' + id ).css( 'background-image', imagePath );
+
+            // $( '#hero-' + id ).css( 'background-image', 'url(/images/heroes/' + unit.imageFileName + '.jpg)' );
         }
     }
 }

@@ -1,113 +1,63 @@
-// function initBoard1() {
-//     const NUMBER_OF_HEROES_IN_ROW = 4;
-//     const NUMBER_OF_HEROES_IN_COLUMN = 3;
-//     const NUMBER_OF_CELLS_BETWEEN_HEROES = 5;
-//     const BOARD_SIZE_X = ( NUMBER_OF_HEROES_IN_ROW - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_ROW;
-//     const BOARD_SIZE_Y = ( NUMBER_OF_HEROES_IN_COLUMN - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_COLUMN;
-
-//     for ( let row = 0; row < BOARD_SIZE_Y; row++ ) {
-//         $( '#board' ).append( $( `<div class="row" id="row-${row}">` ) ); 
-//     }
-
-//     for ( let row = 0; row < BOARD_SIZE_Y; row++ ) {
-//         for ( let column = 0; column < BOARD_SIZE_X; column++ ) {
-//             let cellId = `cell-${column}-${row}`;                    
-//             $( '#row-' + row ).append( $( `<div class="cell" id="${cellId}">` ) );        
-//             let $cell = $( '#' + cellId ); 
-//             let cellSize = vmin2px( 100 / BOARD_SIZE_Y ); 
-//             $cell.css( 'width', cellSize + 'px' );
-//             $cell.css( 'height', cellSize + 'px' );
-//             $cell.text(column + '-' + row); //TODO   
-//         }    
-//     }
-// }
-
-function initUnits() {
-    for ( let unit of unitsLibrary ) {
-        units.push( cloneObject( unit ) );
-    }
-}
-
-// function initBoard2() {
-//     board = {
-//         '$element' : $( '#board' ),
-//         'cells' : []
-//     };
-
-//     const NUMBER_OF_HEROES_IN_ROW = 4;
-//     const NUMBER_OF_HEROES_IN_COLUMN = 3;
-//     const NUMBER_OF_CELLS_BETWEEN_HEROES = 5;
-//     const BOARD_SIZE_X = ( NUMBER_OF_HEROES_IN_ROW - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_ROW;
-//     const BOARD_SIZE_Y = ( NUMBER_OF_HEROES_IN_COLUMN - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_COLUMN;
-
-//     for ( let row = 0; row < BOARD_SIZE_Y; row++ ) {
-//         board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
-//     }
-
-//     for ( let row = 0; row < BOARD_SIZE_Y; row++ ) {
-//         for ( let column = 0; column < BOARD_SIZE_X; column++ ) {
-//             let cellId = `cell-${column}-${row}`;                    
-//             $( '#row-' + row ).append( $( `<div class="cell" id="${cellId}">` ) );        
-//             let $cell = $( '#' + cellId );       
-//             let cell = {};  
-//             cell.indexes = { x: column, y: row };
-//             cell.$element = $cell;
-//             let cellSize = vmin2px( 100 / BOARD_SIZE_Y ); 
-//             $cell.css( 'width', cellSize + 'px' );
-//             $cell.css( 'height', cellSize + 'px' );
-//             board.cells.push( cell );
-//             $cell.text(column + '-' + row); //TODO   
-//         }    
-//     }
-// }
+const NUMBER_OF_HEROES_IN_ROW = 4;
+const NUMBER_OF_HEROES_IN_COLUMN = 3;
+const NUMBER_OF_CELLS_BETWEEN_HEROES = 5;
 
 function initBoard() {
-    let heroesTeams = [  1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2 ];
-    shuffle( heroesTeams );
-
-    let heroesIds = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ];
-    shuffle( heroesIds );
-
-    let $board = $( '#board' );
-
-    for ( let row = 0; row < BOARD_SIZE_Y; row++ ) {
-        $board.append( $( `<div class="row" id="row-${row}">` ) ); 
+    board = {
+        '$element' : $( '#board' ),
+        'rows': ( NUMBER_OF_HEROES_IN_COLUMN - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_COLUMN,
+        'columns': ( NUMBER_OF_HEROES_IN_ROW - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_ROW,
+        'cells' : []
+    };
+    
+    for ( let row = 0; row < board.rows; row++ ) {
+        board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
     }
 
-    let cellCounter = 0;
-
-    for ( let row = 0; row < BOARD_SIZE_Y; row++ ) {
-        for ( let column = 0; column < BOARD_SIZE_X; column++ ) {
+    for ( let row = 0; row < board.rows; row++ ) {
+        for ( let column = 0; column < board.columns; column++ ) {
             let cellId = `cell-${column}-${row}`;                    
             $( '#row-' + row ).append( $( `<div class="cell" id="${cellId}">` ) );        
             let $cell = $( '#' + cellId );       
-            // $cell.text(column + '-' + row); //TODO         
             let cell = {};  
-            cells.push( cell );
-            cell.id = cellCounter;
             cell.$element = $cell;
             cell.indexes = { x: column, y: row };
+            let cellSize = vmin2px( 100 / board.rows ); 
+            $cell.css( 'width', cellSize + 'px' );
+            $cell.css( 'height', cellSize + 'px' );
             setCellOrHeroElementSize( $cell );
-            cellCounter++;
+            board.cells.push( cell );
+            $cell.text(column + '-' + row); //TODO   
         }    
     }
+}
 
+function initHeroes( heroesData ) {
+    for ( let unit of gameData ) {
+        if ( unit.type == 'hero' ) {
+            units.push( cloneObject( unit ) );
+        }
+    }
+
+    // let randomHeroesId = shuffle( [ 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ] );
+    let randomHeroesId = shuffle( [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] );
+    let randomHeroesTeams = shuffle( [  1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2 ] );
     let heroCounter = 0;
 
-    for ( let row = 0; row < BOARD_SIZE_Y; row++ ) {
-        for ( let column = 0; column < BOARD_SIZE_X; column++ ) {
+    for ( let row = 0; row < board.rows; row++ ) {
+        for ( let column = 0; column < board.columns; column++ ) {
             if ( column % ( NUMBER_OF_CELLS_BETWEEN_HEROES + 1 ) == 0 &&
                  row % ( NUMBER_OF_CELLS_BETWEEN_HEROES + 1 ) == 0 &&
                  heroCounter < NUMBER_OF_HEROES_IN_ROW * NUMBER_OF_HEROES_IN_COLUMN ) { 
 
-                let heroId = `hero-${heroesIds[ heroCounter ]}`;                                    
-                $board.append( $( `<div class="hero" id="${heroId}">` ) );    
+                let heroId = `hero-${randomHeroesId[ heroCounter ]}`;                                    
+                board.$element.append( $( `<div class="hero" id="${heroId}">` ) );    
                 let $hero = $( '#' + heroId ); 
                 let heroIndexes = { x: column, y: row };  
                 setCellOrHeroElementSize( $hero );     
                 setHeroElementPosition( heroIndexes, heroId );    
-                setHeroBackground( heroesIds[ heroCounter ] );
-                let team = heroesTeams[ heroesIds[ heroCounter ] ];                
+                setHeroBackground( randomHeroesId[ heroCounter ] );
+                let team = randomHeroesTeams[ randomHeroesId[ heroCounter ] ];  
 
                 if ( team == 1 ) {
                     $hero.addClass( 'team1' );
@@ -116,13 +66,13 @@ function initBoard() {
                 }
 
                 for ( let unit of units ) {
-                    if ( unit.id == heroesIds[ heroCounter ] ) {
+                    if ( unit.id == randomHeroesId[ heroCounter ] ) {
                         unit.team = team;
                         unit.indexes = heroIndexes;
                         unit.$element = $hero;
                     }
                 }
-               
+
                 heroCounter++;
             }
         }    

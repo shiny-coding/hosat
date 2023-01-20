@@ -18,9 +18,12 @@ function getLastUnitId() {
 
 function createNewGameUnits( $game_type ) {
     $originUnitsData = sqlQueryObjects( 
-        "SELECT unit_id, unit_type, hp_default, hp_current, mp_default, mp_current, ap_default, ap_current 
+        "SELECT id, type, name, image_file_name, hp_default, hp_current, mp_default, mp_current, ap_default, ap_current 
             FROM units
             WHERE game_id = -1" );
+
+    return json_encode( $originUnitsData );
+
 
     $lastUnitId = getLastUnitId();
     $newGameUnits = [];
@@ -51,13 +54,13 @@ function getUnitsData() {
     getLastGameIdCreated();
 
     $unitsData = sqlQueryObjects( 
-        "SELECT unit_id, unit_type, hp_default, hp_current, mp_default, mp_current, ap_default, ap_current 
+        "SELECT unit_id, unit_type, image_file_name, hp_default, hp_current, mp_default, mp_current, ap_default, ap_current 
             FROM units
             WHERE game_id = -1" );
 
     // $b=json_encode( $unitsData );
     // $a=5;
-    // json_encode( (object)[] ) 
+    // json_encode( (object)[] ) image_file_name
     // sqlQueryObjects( $sql ) 
 
     // return $b;

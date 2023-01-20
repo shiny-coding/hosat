@@ -6,7 +6,7 @@
     <meta name="game-data-json" content="<?php
         require "utilities_php.php";
         require "functions_php.php";
-        echo htmlspecialchars( getUnitsData() );
+        echo htmlspecialchars( createNewGameUnits( 's') );
 
         // echo gameDataJson();
     
@@ -29,7 +29,7 @@
     </div>
     <div id="end-turn">End Turn</div>
     <script src="utilities_js.js"></script>
-    <script src="units.js"></script>
+    <!-- <script src="units.js"></script> -->
     <script src="functions_js.js"></script>
     <script src="events.js"></script>
     <script src="initialization.js"></script>    
