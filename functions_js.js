@@ -67,7 +67,7 @@ function describeUnit( unitId ) {
         Attack Distance: ${unit.currentAttackDistance} / ${unit.baseAttackDistance}
     `;
 
-    $( '#unit-parameters' ).html( unitParameters );   
+    $( '#unit-parameters-panel' ).html( unitParameters );   
 }
 
 function calculatePathMap( unitId ) {
@@ -206,4 +206,61 @@ function animateMoveByPath( path ) {
             }                  
         }
     } ); 
+}
+
+function updateTurnInfoPanel() {
+    let $globalTurnCount = $( '#global-turn-count' );
+    $globalTurnCount.text( 'TURN ' + 1 );
+
+    let $currentPlayerName = $( '#current-player-name' );
+
+    if ( player1.current == true ) {
+        $currentPlayerName.text( player1.name + '(' + player1.color + ') Move' );
+    } else {
+        $currentPlayerName.text( player2.name + '(' + player2.color + ') Move' );
+    }
+}
+
+function setTeamUnitsUnselectable( unitTeam ) {
+    for ( let unit of units ) {
+        if ( unit.team == unitTeam ) {
+            unit.$element.addClass( 'unselectable-unit' );
+        }
+    }
+}
+
+function unsetTeamUnitsUnselectable( unitTeam ) {
+    for ( let unit of units ) {
+        if ( unit.team == unitTeam ) {
+            unit.$element.removeClass( 'unselectable-unit' );
+        }
+    }
+}
+
+function getHeroes( gameData ) {
+    let heroes = [];
+    for ( let item of gameData ) {
+        if ( item.unitType == 'hero' ) {
+            heroes.push( item );
+        }
+    }
+    return heroes;
+}
+
+function getSummons( gameData ) {
+    let heroes = [];
+    for ( let item of gameData ) {
+        if ( item.unitType == 'summon' ) {
+            heroes.push( item );
+        }
+    }
+    return heroes;
+}
+
+function setUnits( heroes ) {
+    let units = [];
+    for ( let hero of heroes ) {
+        units.push( cloneObject( hero ) );
+    }
+    return units;
 }

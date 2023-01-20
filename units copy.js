@@ -14,7 +14,39 @@ function initUnitsLibrary() {
             'baseDamage' : 7,
             'currentDamage' : 7,
             'baseAttackDistance' : 7,
-            'currentAttackDistance' : 7
+            'currentAttackDistance' : 7,
+            'identity' : {
+                'id': 0,
+                'type' : 'hero',        
+                'name' : 'Astral Mage',
+                'team' : undefined,
+                'playerId': undefined
+            },
+            'parameters' : {
+                'baseHP' : 7,
+                'currentHP' : 7,
+                'baseAP' : 6,
+                'currentAP' : 6,
+                'baseDamage' : 7,
+                'currentDamage' : 7,
+                'baseAttackDistance' : 7,
+                'currentAttackDistance' : 7,
+            },
+            'skills' : {
+                //
+            },
+            'board' : {
+                'inGame' : false,
+                // 'alive' : undefined,
+                'choosen' : false,
+                'disabled' : true,
+                'indexes' : { x : undefined, y : undefined },
+                'pathMap' : undefined
+            },
+            'initialization' : {
+                'imagePath' : '/images/heroes/astral_mage.jpg',
+                'teamChooseClicks' : 0
+            }
         },
         {
             'id' : 1,
