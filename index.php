@@ -6,10 +6,7 @@
     <meta name="game-data-json" content="<?php
         require "utilities_php.php";
         require "functions_php.php";
-        echo htmlspecialchars( createNewGameUnits( 's') );
-
-        // echo gameDataJson();
-    
+        echo htmlspecialchars( createNewGameUnits( 's') );    
     ?>">
     <title>Heroes of Strategy and Tactics</title>
     <link rel="stylesheet" href="main.css">  
@@ -19,17 +16,15 @@
 <body>
     <div id="container">
         <div id="board"></div>
-        <div id="info-panel">
-            <div id="turn-info-panel">
-                <div id="global-turn-count"></div>
-                <div id="current-player-name"></div>
-            </div>
-            <div id="unit-parameters-panel"></div>
+        <div id="sidebar">
+            <div id="round"></div>
+            <div id="turn"></div>   
+            <div id="current-player"></div>          
+            <div id="unitbar"></div>
         </div>
     </div>
-    <div id="end-turn">End Turn</div>
+    <div id="end-turn-button">End Turn</div>
     <script src="utilities_js.js"></script>
-    <!-- <script src="units.js"></script> -->
     <script src="functions_js.js"></script>
     <script src="events.js"></script>
     <script src="initialization.js"></script>    

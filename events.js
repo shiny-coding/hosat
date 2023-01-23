@@ -1,41 +1,74 @@
 function onCellClick( e ) {
-    if ( isSelectionBlocked ) return;
-    if ( choosenUnitId == null ) return;    
+    if ( game.teamChooseFase || game.isSelectionBlocked ) return;
 
-    $cells.removeClass( 'path-cell' ); 
+    let unit = getCurrentUnit();
+
+    if ( !unit ) return;    
+
+    // let cell = getCurrentCell();
+    // $cells.removeClass( 'path-cell' ); 
+
     let $cell = $( this ); 
-    let cell = getCell( $cell ); 
-    let unit = getUnitById( choosenUnitId );   
+    // let cell = getCell( $cell ); 
 
-    if ( choosenCellId == cell.id ) {
-        let step = 0;
-        let path = calculateMovePath( cell.indexes, unit.indexes );
-        animateMoveByPath( path );
-        // setTeamUnitsUnselectable( unit.team ); //TODO
-        choosenCellId = null;
+    // if ( !isCellAvailable( $cell ) ) return;
+
+    if ( isCellOfPath( $cell ) ) {
+        //
     }
 
+    // if ( choosenCellId == cell.id ) {
+    //     let step = 0;
+    //     let path = calculateMovePath( cell.indexes, unit.indexes );
+    //     animateMoveByPath( path );
+    //     // setTeamUnitsUnselectable( unit.team ); //TODO
+    //     choosenCellId = null;
+    // }
+
     if ( isCellAvailable( $cell ) ) {
-        drawMovePath( cell.indexes, unit.indexes );
-        choosenCellId = cell.id;
+        drawMovePath( $cell, unit );
     }
 }
 
 function onUnitClick( e ) {
     let $unit = $( this );
     let unit = getUnitByElement( $unit );
-    choosenUnitId = null;
-    choosenUnitId = unit.id;
+    
+    if ( game.teamChooseFase ) {
+        if ( unit.isCurrent ) {
+            let team = unit.team;
+            players[0].team = team;
+            
+            if ( team == UNIT_TEAMS[0] ) players[1].team = UNIT_TEAMS[1];
+                else players[1].team = UNIT_TEAMS[0];
+            
+            game.roundCount = 1;
+            game.turnCount = 1;
+            game.currentPlayerId = 0;
+            game.teamChooseFase = false;
+            updateSidebar( unit );  
+        } else {
+            for ( let unit of units ) unit.isCurrent = false;
+            unit.isCurrent = true;
+            describeUnit( unit );
+        }
+
+        return; 
+    }
+
     $cells.removeClass( 'available-cell' );
 
-    // let currentUnit = 
-    // if ( unit.team != currentUnit.team ) {
-    //     //
-    // }
-
-    initTurnInfoPanel( unit );
-    describeUnit( choosenUnitId );
-    drawPathMap( choosenUnitId );
+    for ( let unit of units ) {
+        unit.isCurrent = false;
+        unit.pathMap = null;
+    } 
+    // 
+    // let $unit = $( this );
+    // let unit = getUnitByElement( $unit );
+    unit.isCurrent = true;
+    setCellsAvailable( unit );
+    // describeUnit( unit );
+    // initTurnInfoPanel( unit );
 }
 
 function onEndTurnClick( e ) {
@@ -74,6 +107,6 @@ function onEndTurnClick( e ) {
     turnCount++;
 
     describeUnit( choosenUnitId );
-    drawPathMap( choosenUnitId );
+    setCellsAvailable( unit );
     updateTurnInfoPanel();
 }

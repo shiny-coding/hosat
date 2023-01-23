@@ -44,16 +44,16 @@ html, body {
 	border: 0.5vmin solid blue;
 }
 
-#info-panel {
+#sidebar {
 	display: flex;
 	flex-direction: column;
 }
-#turn-info-panel {
+#turn-sidebar {
 	display: flex;
 	flex-direction: column;
 	background-color: lightgray;
 }
-#unit-parameters-panel {
+#unitbar {
 	background-color: white;
 }
 
