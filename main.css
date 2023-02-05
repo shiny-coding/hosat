@@ -37,11 +37,15 @@ html, body {
 	text-align: center;
 	background-size: 100%;
 }
-.team1 {
-	border: 0.5vmin solid red;
+.team0 {
+	border: 0.5vmin solid black;
 }
-.team2 {
-	border: 0.5vmin solid blue;
+.team1 {
+	border: 0.5vmin solid white;
+}
+
+.moved {
+	opacity: 0.5;
 }
 
 #sidebar {
@@ -57,7 +61,7 @@ html, body {
 	background-color: white;
 }
 
-#end-turn {
+#end {
 	position: absolute;
 	bottom: 0;
 	right: 0;
@@ -66,9 +70,10 @@ html, body {
 	width: 50px;
 	height: 50px;
 	background-color: brown;
+	z-index: 10;
 }
 
-.unselectable-unit {
+.unselectable {
 	pointer-events: none;
 }
 

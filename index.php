@@ -21,9 +21,9 @@
             <div id="turn"></div>   
             <div id="current-player"></div>          
             <div id="unitbar"></div>
+            <div id="end">End</div>
         </div>
-    </div>
-    <div id="end-turn-button">End Turn</div>
+    </div>    
     <script src="utilities_js.js"></script>
     <script src="functions_js.js"></script>
     <script src="events.js"></script>

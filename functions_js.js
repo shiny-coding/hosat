@@ -1,19 +1,53 @@
+//TODO in alphabetic
 //TODO make functions - as methods of objects!!!?
-function getCell( $cell ) { //TODO in alphabetic
-    for ( let cell of cells ) {
-        if ( cell.$element.is( $cell ) ) {
-            return cell;
+
+function getCellByElement( $cell ) { 
+    for ( let row = 0; row < board.rows; row++ ) {        
+        for ( let column = 0; column < board.columns; column++ ) {
+            if ( board.cells[ column ][ row ].$element.is( $cell ) ) 
+                return board.cells[ column ][ row ];   
         }
     }
+
+// function getCellByElement( $cell ) { 
+    // for ( let cell of cells ) {
+    //     if ( cell.$element.is( $cell ) ) {
+    //         return cell;
+    //     }
+    // }
 }
 
-function getCellElementByIndexes( cellIindexes ) {
-    for ( let cell of cells ) {
-        if ( cell.indexes.x == cellIindexes.x && cell.indexes.y == cellIindexes.y ) {
-            return cell.$element;
-        }
-    }
-}
+// function removeCurrentStateFromUnits() {
+//     for ( let unit of units ) {
+//         unit.isCurrent = false;
+//     }
+// }
+
+// function disableNonCurrentTeamUnits( unit ) {
+//     let currentTeam = undefined;
+
+//     for ( let unit of units ) {
+//         if ( unit.isCurrent ) {
+//             currentTeam = unit.team;
+//             break;
+//         }
+//     }
+    
+//     for ( let unit of units ) {
+//         if ( unit.team != currentTeam ) {
+//             unit.teamTurn = false;
+//             // unit.$element.addClass( 'disabled' );
+//         }
+//     }
+// }
+
+// function getCellElementByIndexes( cellIindexes ) {
+//     for ( let cell of cells ) {
+//         if ( cell.indexes.x == cellIindexes.x && cell.indexes.y == cellIindexes.y ) {
+//             return cell.$element;
+//         }
+//     }
+// }
 
 function getUnitById( unitId ) {   
     for ( let unit of units ) {
@@ -41,15 +75,15 @@ function getCurrentUnit() {
     return false;
 }
 
-// function getCurrentCell() {
-//     for ( let unit of units ) {
-//         if ( unit.isCurrent == true) {
-//             return unit;
-//         }
-//     }
+function isPartlyMoved() {
+    for ( let unit of units ) {
+        if ( unit.apCurrent < unit.apDefault ) {
+            return unit;
+        }
+    }
 
-//     return false;
-// }
+    return false;
+}
 
 function isCellOfPath( cell ) {
     for ( let cell of board.cells ) {
@@ -94,18 +128,21 @@ function setHeroBackground( id ) {
 // }
 
 function isCellAvailable( $cell ) {
-    // let cell = getCell( $cell );
+    // let cell = getCellByElement( $cell );
     // if ( cell.isCellAvailable ) return true;
 
-    if ( getCell( $cell ).isCellAvailable ) return true; //TODO Q need return false branch?
+    if ( getCellByElement( $cell ).isCellAvailable ) return true; //TODO Q need return false branch?
 }
 
 function isCellOfPath( $cell ) {
     //
 }
 
-function setCellsAvailable( unit ) {
-    unit.pathMap = []; //TODO unit do not need pathMap?? cell.available!!
+// function showCellsAvailable( unit ) {
+function showCellsAvailable( unit ) {
+    // if ( !unit.isCurrent ) return;
+
+    unit.pathMap = []; // ??? just pathMap without unit !!!
     
     for ( let x = 0; x < board.columns; x++ ) {          
         unit.pathMap[ x ] = [];        
@@ -142,22 +179,34 @@ function setCellsAvailable( unit ) {
         }
     }
 
-    for ( let cell of board.cells ) {
-        if ( unit.pathMap[ cell.indexes.x ][ cell.indexes.y ] > 0 ) {
-            cell.isCellAvailable = true; 
-            cell.$element.addClass( 'available-cell' );            
+    for ( let row = 0; row < board.rows; row++ ) {        
+        for ( let column = 0; column < board.columns; column++ ) {
+            if ( unit.pathMap[ board.cells[ column ][ row ].indexes.x ][ board.cells[ column ][ row ].indexes.y ] > 0 ) {
+                board.cells[ column ][ row ].isAvailable = true; 
+                board.cells[ column ][ row ].$element.addClass( 'available-cell' );            
+            }
         }
     }
+
+    // let a=5;
+
+    // for ( let cell of board.cells ) {
+    //     if ( unit.pathMap[ cell.indexes.x ][ cell.indexes.y ] > 0 ) {
+    //         cell.isCellAvailable = true; 
+    //         cell.$element.addClass( 'available-cell' );            
+    //     }
+    // }
 }
 
-function calculateMovePath( $cell, unit ) {
-    let cellIindexes = getCell( $cell ).indexes;
+// function calculateMovePath( $cell, unit ) {
+function drawMovePath( $cell, unit ) {
+    let cellIindexes = getCellByElement( $cell ).indexes;
     let unitIndexes = unit.indexes;
     let preferHorizontalMovement = Math.abs( cellIindexes.x - unitIndexes.x ) < Math.abs( cellIindexes.y - unitIndexes.y );
     let current = cellIindexes; //TODO remove current ???
     let distance = unit.pathMap[ cellIindexes.x ][ cellIindexes.y ];    
     let currentDistance = distance; //TODO ???
-    let path = [];
+    let movePath = [];
 
     while ( current.x != unitIndexes.x || current.y != unitIndexes.y ) {    
         let stopSearch = false;
@@ -182,127 +231,96 @@ function calculateMovePath( $cell, unit ) {
         }
 
         current = bestCandidate;
-        path.push( bestCandidate );
+        movePath.push( bestCandidate );
         currentDistance--;
 
         if ( currentDistance < 0 ) break;
     }
     
-    path.reverse();
-    path.shift();
-    path.push( cellIindexes );    
+    movePath.reverse();
+    movePath.shift();
+    movePath.push( cellIindexes );      
+    unit.movePath = movePath;
 
-    return path;
-}
-
-// function calculateMovePath( choosenCellIndexes, choosenUnitIndexes ) {
-//     let path = [];
-//     let preferHorizontalMovement = Math.abs( choosenCellIndexes.x - choosenUnitIndexes.x ) < Math.abs( choosenCellIndexes.y - choosenUnitIndexes.y );
-//     let current = choosenCellIndexes;
-//     let distance = pathMap[ choosenCellIndexes.x ][ choosenCellIndexes.y ];    
-//     let currentDistance = distance;
-
-//     while ( current.x != choosenUnitIndexes.x || current.y != choosenUnitIndexes.y ) {    
-//         let stopSearch = false;
-//         let bestCandidate = null;
-
-//         for ( let x = current.x - 1; x <= current.x + 1; x++ ) {   
-//             for ( let y = current.y - 1; y <= current.y + 1; y++ ) {
-//                 if ( y < 0 || y > board.rows - 1 || x < 0 || x > board.columns - 1 ) continue;
-
-//                 if ( pathMap[ x ][ y ] == currentDistance - 1 ) {
-//                     let isHorizontalMovement = Math.abs( x - current.x ) != 0 && Math.abs( y - current.y ) == 0;                    
-//                     bestCandidate = { x, y };
-
-//                     if ( preferHorizontalMovement == isHorizontalMovement ) {
-//                         stopSearch = true;
-//                         break;
-//                     } 
-//                 }
-//             }
-
-//             if ( stopSearch ) break;
-//         }
-
-//         current = bestCandidate;
-//         path.push( bestCandidate );
-//         currentDistance--;
-
-//         if ( currentDistance < 0 ) break;
-//     }
-    
-//     path.reverse();
-//     path.shift();
-//     path.push( choosenCellIndexes );    
-
-//     return path;
-// }
-
-function drawMovePath( $cell, unit ) {
-    let path = calculateMovePath( $cell, unit );
-
-    for ( let indexes of path ) {
-        getCellElementByIndexes( indexes ).addClass( 'path-cell' ); 
+    for ( let row = 0; row < board.rows; row++ ) {        
+        for ( let column = 0; column < board.columns; column++ ) {
+            for ( let step of movePath ) {
+                if ( column == step.x && row == step.y ) {
+                    board.cells[ column ][ row ].isPathCell = true;
+                    board.cells[ column ][ row ].$element.addClass( 'path-cell' ); 
+                }  
+            }
+        }
     }
 }
 
-function animateMoveByPath( path ) {
-    let choosenUnit = getUnitById( choosenUnitId ); 
-    let nextCellIndexes = path.shift();
+function animateMoveByPath( unit ) {
+    let nextCellIndexes = unit.movePath.shift();
     let $cell = $( `#cell-${nextCellIndexes.x}-${nextCellIndexes.y}` );
     let cellOffset = $cell.offset();  
-    choosenUnit.apCurrent--;
+    unit.apCurrent--;
 
-    choosenUnit.$element.animate( {
+    // if ( unit.apCurrent <= 0 ) {
+    //     unit.isCurrent = false;
+    //     $cells.removeClass( 'path-cell' ); 
+    // } else {
+    //     unit.isCurrent = true;
+    // }
+
+    // if ( unit.apCurrent < unit.apDefault && unit.apCurrent >= 0 ) {
+    //     // unit.isCurrent = true;
+    //     unit.isPartlyMooved = true;
+    // } else {
+    //     // unit.isCurrent = false;
+    //     unit.isPartlyMooved = false;
+    //     // $cells.removeClass( 'path-cell' ); 
+    // }
+
+    // unit.isCurrent = true;  
+    game.isSelectionBlocked = true;
+
+    unit.$element.animate( {
         left: cellOffset.left,
         top: cellOffset.top
     }, {
         duration: 500,
         easing: "linear",
         done: function() {
-            choosenUnit.indexes = nextCellIndexes;
+            unit.indexes = nextCellIndexes;
             $cells.removeClass( 'available-cell' ); 
-            setCellsAvailable( unit ); 
-            describeUnit( choosenUnit.id );               
+            showCellsAvailable( unit ); 
+            updateSidebar( unit );               
             $cell.removeClass( 'path-cell' ); 
 
-            if ( path.length > 0 ) {                    
-                animateMoveByPath( path );                    
+            if ( unit.movePath.length > 0 ) {                    
+                animateMoveByPath( unit );  
             } else {
-                isSelectionBlocked = false;
-            }                  
+                game.isSelectionBlocked = false;
+
+                if ( unit.apCurrent == 0 ) {
+                    unit.isMooved = true;
+                    unit.$element.addClass( 'moved' );
+                }
+                // unit.partlyMooved = false;
+            }   
         }
     } ); 
-}
-
-function describeUnit( unit ) {
-    $( '#unitbar' ).html( `
-        ${unit.name}<br>
-        Health Points: ${unit.hpCurrent} / ${unit.hpDefault}<br>
-        Action Points: ${unit.apCurrent} / ${unit.apDefault}<br>        
-        Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>   
-        Attack Distance: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault}
-    ` );   
-}
-
-function updateTurnInfoPanel() {
-    let $globalTurnCount = $( '#global-turn-count' );
-    $globalTurnCount.text( 'TURN ' + 1 );
-
-    let $currentPlayerName = $( '#current-player-name' );
-
-    if ( player1.current == true ) {
-        $currentPlayerName.text( player1.name + '(' + player1.color + ') Move' );
-    } else {
-        $currentPlayerName.text( player2.name + '(' + player2.color + ') Move' );
-    }
 }
 
 function updateSidebar( unit ) {
     $( '#round' ).text( 'Round ' + game.roundCount );
     $( '#turn' ).text( 'Turn ' + game.turnCount );
     $( '#current-player' ).text( getPlayerNameById( game.currentPlayerId ) + ' ( ' + getPlayerTeamById( game.currentPlayerId ) + ' )' );
-    describeUnit( unit );
+    
+    if ( unit ) {
+        $( '#unitbar' ).html( `
+            ${unit.name}<br>
+            Health Points: ${unit.hpCurrent} / ${unit.hpDefault}<br>
+            Action Points: ${unit.apCurrent} / ${unit.apDefault}<br>        
+            Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>   
+            Attack Distance: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault} ` 
+        ); 
+    }
 }
 
 function getPlayerNameById( playerId ) {

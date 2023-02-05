@@ -1,7 +1,7 @@
 const NUMBER_OF_HEROES_IN_ROW = 4;
 const NUMBER_OF_HEROES_IN_COLUMN = 3;
 const NUMBER_OF_CELLS_BETWEEN_HEROES = 4;
-const UNIT_TEAMS = [ 'RED', 'BLUE' ];
+const TEAMS = [ 'white', 'black' ];
 
 let gameDataJson = $('meta[name="game-data-json"]').attr('content');
 let gameData = JSON.parse( decodeHtml( gameDataJson ) );
@@ -33,10 +33,10 @@ function initPlayers() {
 function initGame() {
     game = {
         teamChooseFase: true,
-        roundCount: undefined,
-        turnCount: undefined,
-        currentPlayerId: undefined,
-        isSelectionBlocked: false
+        roundCount: 1,
+        turnCount: 1,
+        currentTeam: undefined,
+        currentPlayerId: undefined
     }   
 }
 
@@ -53,7 +53,11 @@ function initBoard() {
         board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
     }
 
-    for ( let row = 0; row < board.rows; row++ ) {
+    for ( let column = 0; column < board.columns; column++ ) { 
+        board.cells[ column ] = [];
+    }
+
+    for ( let row = 0; row < board.rows; row++ ) {        
         for ( let column = 0; column < board.columns; column++ ) {
             let cellId = `cell-${column}-${row}`;                    
             $( '#row-' + row ).append( $( `<div class="cell" id="${cellId}">` ) );        
@@ -61,12 +65,13 @@ function initBoard() {
             let cell = {};  
             cell.$element = $cell;
             cell.indexes = { x: column, y: row };
-            cell.available = false;
+            cell.isAvailable = false;
+            cell.isPathCell = false; 
             let cellSize = vmin2px( 100 / board.rows ); 
             $cell.css( 'width', cellSize + 'px' );
             $cell.css( 'height', cellSize + 'px' );
             setCellOrHeroElementSize( $cell );
-            board.cells.push( cell );
+            board.cells[ column ][ row ] = cell;
             $cell.text(column + '-' + row); //TODO   
         }    
     }
@@ -100,7 +105,7 @@ function initHeroes( heroesData ) {
                 let team = randomHeroesTeams[ randomHeroesId[ heroCounter ] ];  
 
                 if ( team == 0 ) {
-                    $hero.addClass( 'team1' );
+                    $hero.addClass( 'team0' );
                 } else {
                     $hero.addClass( 'team2' );
                 }
@@ -110,7 +115,9 @@ function initHeroes( heroesData ) {
                         unit.indexes = heroIndexes;
                         unit.isCurrent = false;
                         unit.$element = $hero;   
-                        unit.team = UNIT_TEAMS[ team ];                    
+                        unit.team = TEAMS[ team ];     
+                        unit.isCurrent = false;
+                        unit.isPartlyMoved = false;               
                     }
                 }
 
@@ -121,38 +128,38 @@ function initHeroes( heroesData ) {
 }
 
 function initSidePanel() {
-    sidePanel = {
-        // fase: 'Team Choose',
-        turnCounter: 0,
-        currentPlayerId: undefined
-    }
+    // sidePanel = {
+    //     // fase: 'Team Choose',
+    //     turnCounter: 0,
+    //     currentPlayerId: undefined
+    // }
 
     $( '#round' ).append( 'TEAM CHOOSE FASE');
     $( '#turn' ).append( 'Choose your team by clicking a hero TWICE in a row!');
 }
 
-function initTurnInfoPanel( unit ) {
-    if ( ! battleFase ) {
-        player1.team = unit.team;
+// function initTurnInfoPanel( unit ) {
+//     if ( ! battleFase ) {
+//         player1.team = unit.team;
 
-        if ( unit.team == 1 ) {
-            player1.color = 'Red';
-            player1.current = true;
-            player2.team = 2;
-            player2.color = 'Blue';
-            player2.current = false;
-            setTeamUnitsUnselectable( 2 ) ;
-        } else {
-            player1.color = 'Blue';
-            player1.current = false;
-            player2.team = 1;
-            player2.color = 'Red';
-            player2.current = true;
-            setTeamUnitsUnselectable( 1 ) ;    
-        }
+//         if ( unit.team == 1 ) {
+//             player1.color = 'Red';
+//             player1.current = true;
+//             player2.team = 2;
+//             player2.color = 'Blue';
+//             player2.current = false;
+//             setTeamUnitsUnselectable( 2 ) ;
+//         } else {
+//             player1.color = 'Blue';
+//             player1.current = false;
+//             player2.team = 1;
+//             player2.color = 'Red';
+//             player2.current = true;
+//             setTeamUnitsUnselectable( 1 ) ;    
+//         }
 
-        battleFase = true;
+//         battleFase = true;
 
-        updateTurnInfoPanel();
-    }
-}
+//         updateTurnInfoPanel();
+//     }
+// }

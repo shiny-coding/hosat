@@ -1,112 +1,98 @@
 function onCellClick( e ) {
-    if ( game.teamChooseFase || game.isSelectionBlocked ) return;
+    if ( game.teamChooseFase || game.isSelectionBlocked ) return;   
 
     let unit = getCurrentUnit();
-
-    if ( !unit ) return;    
-
-    // let cell = getCurrentCell();
-    // $cells.removeClass( 'path-cell' ); 
+    if ( !unit ) return;
 
     let $cell = $( this ); 
-    // let cell = getCell( $cell ); 
+    let cell = getCellByElement( $cell ); 
 
-    // if ( !isCellAvailable( $cell ) ) return;
-
-    if ( isCellOfPath( $cell ) ) {
-        //
-    }
-
-    // if ( choosenCellId == cell.id ) {
-    //     let step = 0;
-    //     let path = calculateMovePath( cell.indexes, unit.indexes );
-    //     animateMoveByPath( path );
-    //     // setTeamUnitsUnselectable( unit.team ); //TODO
-    //     choosenCellId = null;
-    // }
-
-    if ( isCellAvailable( $cell ) ) {
+    if ( cell.isPathCell ) {
+        animateMoveByPath( unit );     
+    } else if ( cell.isAvailable ) {
+        $cells.removeClass( 'path-cell' ); 
         drawMovePath( $cell, unit );
     }
 }
 
 function onUnitClick( e ) {
+    if ( game.isSelectionBlocked ) return;  
+
     let $unit = $( this );
-    let unit = getUnitByElement( $unit );
+    let unit = getUnitByElement( $unit );   
+    updateSidebar( unit );  
     
     if ( game.teamChooseFase ) {
         if ( unit.isCurrent ) {
             let team = unit.team;
-            players[0].team = team;
             
-            if ( team == UNIT_TEAMS[0] ) players[1].team = UNIT_TEAMS[1];
-                else players[1].team = UNIT_TEAMS[0];
-            
+            if ( team == TEAMS[0] ) {
+                game.currentTeam = TEAMS[0];   
+                game.currentPlayerId = 0;             
+                players[0].team = TEAMS[0];
+                players[1].team = TEAMS[1];
+            } else {
+                game.currentTeam = TEAMS[1];
+                game.currentPlayerId = 1;
+                players[0].team = TEAMS[1];
+                players[1].team = TEAMS[0];
+            }
+
+            showCellsAvailable( unit ); //перенести в функцию юнита!!!
+            // unit.isCurrent = false;
             game.roundCount = 1;
-            game.turnCount = 1;
-            game.currentPlayerId = 0;
+            game.turnCount = 1;            
             game.teamChooseFase = false;
-            updateSidebar( unit );  
         } else {
             for ( let unit of units ) unit.isCurrent = false;
             unit.isCurrent = true;
-            describeUnit( unit );
+            return;
         }
+    }    
+    
+    if ( unit.team != game.currentTeam || isPartlyMoved() ) return;
 
-        return; 
+    if ( unit.team == game.currentTeam && !isPartlyMoved() ) {
+        for ( let unit of units ) unit.isCurrent = false;
+        unit.isCurrent = true;
+        $cells.removeClass( 'available-cell' );
+        showCellsAvailable( unit );
     }
-
-    $cells.removeClass( 'available-cell' );
-
-    for ( let unit of units ) {
-        unit.isCurrent = false;
-        unit.pathMap = null;
-    } 
-    // 
-    // let $unit = $( this );
-    // let unit = getUnitByElement( $unit );
-    unit.isCurrent = true;
-    setCellsAvailable( unit );
-    // describeUnit( unit );
-    // initTurnInfoPanel( unit );
 }
 
-function onEndTurnClick( e ) {
-    let unit = getUnitById( choosenUnitId );
+function onEndClick( e ) {
+    let isAllUnitsMoved = true;
 
-    if ( unit.team == 1 ) {
-        player1.current = false;
-        player2.current = true;
-        
-        setTeamUnitsUnselectable( 1 ) ;
-        unsetTeamUnitsUnselectable( 2 );
-
-        for ( let unit of units ) {
-            if ( unit.team == 2 ) {
-                choosenUnitId = unit.id;
-                break;
-            }
-        }
-    } else {
-        player1.current = true;
-        player2.current = false;
-
-        setTeamUnitsUnselectable( 2 ) ;
-        unsetTeamUnitsUnselectable( 1 );
-
-        for ( let unit of units ) {
-            if ( unit.team == 1 ) {
-                choosenUnitId = unit.id;
-
-                break;
-            }
+    for ( let unit of units ) {
+        if ( !unit.isMooved ) {
+            isAllUnitsMoved = false;
+            break;
         }
     }
 
-    $cells.removeClass( 'available-cell' );
-    turnCount++;
+    if ( isAllUnitsMoved ) {
+        for ( let unit of units ) {
+            unit.isPartlyMooved = false;
+            unit.apCurrent = unit.apDefault; //TODO учесть заклинания
+        }
 
-    describeUnit( choosenUnitId );
-    setCellsAvailable( unit );
-    updateTurnInfoPanel();
+        game.roundCount++;
+    } else {
+        game.turnCount++;
+    }
+    
+    $cells.removeClass( 'available-cell' );
+    for ( let unit of units ) {
+        unit.isCurrent = false;
+    }
+
+    if ( game.currentTeam == TEAMS[0] ) {
+        game.currentTeam = TEAMS[1]; 
+        game.currentPlayerId = 1;
+    } else {
+        game.currentTeam = TEAMS[0];
+        game.currentPlayerId = 0;
+    }
+
+    updateSidebar(); 
 }
