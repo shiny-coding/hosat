@@ -18,11 +18,18 @@ function getLastUnitId() {
 
 function createNewGameUnits( $game_type ) {
     $originUnitsData = sqlQueryObjects( 
-        "SELECT id, type, name, image_file_name, 
-                hp_default, hp_current, mp_default, mp_current, ap_default, ap_current,
-                is_current, path_map
-            FROM units
-            WHERE game_id = -1" );
+        "SELECT ap_current,
+                ap_default,
+                damage_current,
+                damage_default,
+                hp_current,
+                hp_default,
+                id, 
+                image_file_name, 
+                name, 
+                type
+        FROM units
+        WHERE game_id = -1" );
 
     return json_encode( $originUnitsData );
 

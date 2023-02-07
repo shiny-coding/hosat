@@ -8,10 +8,10 @@ function onCellClick( e ) {
     let cell = getCellByElement( $cell ); 
 
     if ( cell.isPathCell ) {
-        animateMoveByPath( unit );     
+        unit.animateMoveByPath();     
     } else if ( cell.isAvailable ) {
         $cells.removeClass( 'path-cell' ); 
-        drawMovePath( $cell, unit );
+        unit.drawMovePath( $cell );       
     }
 }
 
@@ -19,8 +19,10 @@ function onUnitClick( e ) {
     if ( game.isSelectionBlocked ) return;  
 
     let $unit = $( this );
-    let unit = getUnitByElement( $unit );   
-    updateSidebar( unit );  
+    let unit = Unit.getUnitByElement( $unit );  
+    for ( let unit of Unit.units ) unit.isLastSelected = false;
+    unit.isLastSelected = true;   
+    updateSidebar( unit );   
     
     if ( game.teamChooseFase ) {
         if ( unit.isCurrent ) {
@@ -38,51 +40,78 @@ function onUnitClick( e ) {
                 players[1].team = TEAMS[0];
             }
 
-            showCellsAvailable( unit ); //перенести в функцию юнита!!!
+            updateSidebar( unit ); 
+            unit.showAvailableCells();
             // unit.isCurrent = false;
             game.roundCount = 1;
             game.turnCount = 1;            
             game.teamChooseFase = false;
         } else {
-            for ( let unit of units ) unit.isCurrent = false;
+            for ( let unit of Unit.units ) unit.isCurrent = false;
             unit.isCurrent = true;
             return;
         }
     }    
     
-    if ( unit.team != game.currentTeam || isPartlyMoved() ) return;
+    let test1 = unit.team != game.currentTeam;
+    let test2 = isPartlyMoved();
+    let test3 = isOneRoundOneMovedUnit();
+    if ( test1 || test2 || isOneRoundOneMovedUnit() || unit.isMoved ) return; // TODO
 
-    if ( unit.team == game.currentTeam && !isPartlyMoved() ) {
-        for ( let unit of units ) unit.isCurrent = false;
+    if ( unit.team == game.currentTeam && !isPartlyMoved()) {
+        for ( let unit of Unit.units ) unit.isCurrent = false;
         unit.isCurrent = true;
         $cells.removeClass( 'available-cell' );
-        showCellsAvailable( unit );
+        $cells.removeClass( 'path-cell' );
+        unit.showAvailableCells();
     }
 }
 
 function onEndClick( e ) {
+    game.turnCount++;
+    $end.removeClass( 'end-yellow' );
+    $end.removeClass( 'end-green' );
+    $end.addClass( 'end-red' );
+    $( '#unitbar' ).text( '' );
+    updateSidebar(); 
     let isAllUnitsMoved = true;
 
-    for ( let unit of units ) {
-        if ( !unit.isMooved ) {
+    for ( let unit of Unit.units ) {
+        if ( unit.apCurrent < unit.apDefault ) {
+            unit.apCurrent = 0;
+            updateSidebar(); 
+            // break;
+        }
+
+        if ( !unit.isMoved ) {
             isAllUnitsMoved = false;
-            break;
+            // break;
         }
     }
 
-    if ( isAllUnitsMoved ) {
-        for ( let unit of units ) {
+    // if ( isAllUnitsMoved ) {
+    //     // for ( let unit of Unit.units ) {
+    //     //     unit.isPartlyMooved = false;
+    //     //     unit.apCurrent = unit.apDefault; //TODO учесть заклинания
+    //     // }
+
+    //     // game.roundCount++;
+    // } else {
+    //     game.turnCount++;
+    // }
+
+    if ( game.turnCount == 13 ) { //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        game.roundCount++;
+        game.turnCount = 1;
+
+        for ( let unit of Unit.units ) {
             unit.isPartlyMooved = false;
             unit.apCurrent = unit.apDefault; //TODO учесть заклинания
         }
-
-        game.roundCount++;
-    } else {
-        game.turnCount++;
     }
     
     $cells.removeClass( 'available-cell' );
-    for ( let unit of units ) {
+    for ( let unit of Unit.units ) {
         unit.isCurrent = false;
     }
 

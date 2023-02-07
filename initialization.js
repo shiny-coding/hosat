@@ -1,17 +1,17 @@
 const NUMBER_OF_HEROES_IN_ROW = 4;
 const NUMBER_OF_HEROES_IN_COLUMN = 3;
 const NUMBER_OF_CELLS_BETWEEN_HEROES = 4;
-const TEAMS = [ 'white', 'black' ];
+const TEAMS = [ 'black', 'white' ];
 
-let gameDataJson = $('meta[name="game-data-json"]').attr('content');
-let gameData = JSON.parse( decodeHtml( gameDataJson ) );
+// let gameDataJson = $('meta[name="game-data-json"]').attr('content');
+// let gameData = JSON.parse( decodeHtml( gameDataJson ) );
 
 function initialization() {
     initPlayers();
     initGame();
     initBoard();
     initHeroes( gameData );
-    initSidePanel();
+    initSidebar();
 }
 
 function initPlayers() {
@@ -78,11 +78,11 @@ function initBoard() {
 }
 
 function initHeroes( heroesData ) {
-    for ( let unit of gameData ) {
-        if ( unit.type == 'hero' ) {
-            units.push( cloneObject( unit ) );
-        }
-    }
+    // for ( let unit of gameData ) {
+    //     if ( unit.type == 'hero' ) {
+    //         units.push( cloneObject( unit ) );
+    //     }
+    // }
 
     // let randomHeroesId = shuffle( [ 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ] );
     let randomHeroesId = shuffle( [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] );
@@ -110,10 +110,9 @@ function initHeroes( heroesData ) {
                     $hero.addClass( 'team2' );
                 }
 
-                for ( let unit of units ) {
+                for ( let unit of Unit.units ) {
                     if ( unit.id == randomHeroesId[ heroCounter ] ) {                        
                         unit.indexes = heroIndexes;
-                        unit.isCurrent = false;
                         unit.$element = $hero;   
                         unit.team = TEAMS[ team ];     
                         unit.isCurrent = false;
@@ -127,7 +126,7 @@ function initHeroes( heroesData ) {
     }
 }
 
-function initSidePanel() {
+function initSidebar() {
     // sidePanel = {
     //     // fase: 'Team Choose',
     //     turnCounter: 0,
