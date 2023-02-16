@@ -1,7 +1,11 @@
+// var game = new Game();
+
+
 var gameDataJson = $('meta[name="game-data-json"]').attr('content');
 var gameData = JSON.parse( decodeHtml( gameDataJson ) );
 
-
+// перенести $units.click( onUnitClick ) в класс!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// перенести initialization() в класс!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 var players = [];
 var game = {};
@@ -30,6 +34,7 @@ $end.click( onEndClick );
 
 class Unit {
     constructor( apCurrent, apDefault, damageCurrent, damageDefault, hpCurrent, hpDefault, id, imageFileName, name, type ) {  
+        this.actionsIds = [];
         this.apCurrent = apCurrent;   
         this.apDefault = apDefault;    
         this.damageCurrent = damageCurrent;   
@@ -50,8 +55,14 @@ class Unit {
         this.type = type;
         this.$element = undefined;
         Unit.units.push( this );
+        // if ( Unit.units === undefined ) {
+        //     Unit.units = [this];
+        // } else {
+        //     Unit.units.push( this );
+        // }
     }
 
+    // static units = undefined;
     static units = [];
 
     // static getUnitById( unitId ) {
@@ -187,8 +198,8 @@ class Unit {
         }, {
             duration: 500,
             easing: "linear",
-            // done: function() {
-            done: () => {
+            done: function() {
+            // done: () => {
                 this.indexes = nextCellIndexes;
                 $cells.removeClass( 'available-cell' ); 
                 this.showAvailableCells(); 
@@ -206,26 +217,142 @@ class Unit {
                         $end.removeClass( 'end-yellow' );
                         $end.addClass( 'end-green' );
                     }
-                }   
-            }
+                }  
+            }.bind( this )
+            // }
         } ); 
     }
+
+    // markPossibleTargets() {
+    //     for ( let unit of Unit.units ) {
+    //         let dx = Math.abs( unit.indexes.x - this.indexes.x );
+    //         let dy = Math.abs( unit.indexes.y - this.indexes.y );
+    //         let distance = dx + dy;
+    //         if ( this. >= distance ) {
+    //             hero.$element.addClass( 'attackable' );
+    //         }
+    //     }
+    // }
 }
 
-for ( let item of gameData ) {
+// name
+// type: buff, debuff, damage, control, taunt, ...
+// target: ally, enemy, all
+// hit range
+// range
+// radius / area
+// duration
+// effect ( damage + 2)
+// ap ( 0 if simple attack )
+
+// priest (white mage): 1. Heal. 2. Damage+ ( "Bless weapon" ). 3. Armor (HP+) ( "Bless armor" ). 4.Shield (no damage) ( "Holy shield" ). 5.Purification 6.Resurrection. 
+// astral: 1. Teleport. 2. 
+// air : 1.Haste. 2. wind blow
+// spells: magic mirror, 
+// earth: slow, rock armor
+
+// Stats Enhancement
+// Stats Weakening
+
+// Displacement смещение
+
+class Action {
+    constructor( ap, area, attribute, damage, duration, effect, id, imageFileName, name, distance, sign, target, type, unitId, value ) {
+        this.ap = ap;
+        this.area = area;
+        this.attribute = attribute;
+        this.damage = damage;
+        this.duration = duration;
+        this.effect = effect;
+        this.id = id;        
+        this.imageFileName = imageFileName;
+        this.isSelected = false;
+        this.name = name;
+        this.distance = distance;
+        this.sign = sign;
+        this.target = target;
+        this.type = type;  
+        this.unitId = unitId; 
+        this.value = value; 
+        this.$element = undefined;
+        Action.actions.push( this );
+    }
+
+    static actions = [];
+
+    static getActionById( actionId ) {
+        for ( let action of Action.actions ) {
+            if ( action.id == actionId ) {
+                return action;
+            }
+        }
+    }
+
+    static getActionByElement( $action ) {
+        for ( let action of Action.actions ) {
+            if ( ( 'action-' + action.id ) == $action.attr( 'id' ) ) {
+                return action;
+            }
+        }
+    }
+
+    // static createActionElement() {
+    //     let $element = $( `<div class="action" id="action-${this.id}">${this.name}</div>`);
+    //     $( '#unit-actions' ).append( $element ); 
+
+    //     // for ( let actionId of unit.actionsIds ) {
+    //     //     let action = Action.getActionById( actionId );
+    //     //     let $element = $( `<div class="action" id="action-${action.id}">${action.name}</div>`);
+    //     //     $( '#unit-actions' ).append( $element ); 
+    //     //     unit.$element = $element;
+    //     // }
+    // }
+}
+
+for ( let item of gameData.actions ) {
+    let action = new Action( 
+        item.ap,
+        item.area, 
+        item.attribute,
+        item.damage, 
+        item.duration, 
+        item.effect, 
+        item.id, 
+        item.imageFileName,
+        item.name, 
+        item.distance,
+        item.sign,
+        item.target,
+        item.type,
+        item.unitId, 
+        item.value 
+    );
+}
+
+for ( let item of gameData.units ) {
     if ( item.type == 'hero' ) {
-        let unit = new Unit( 
+        let unit = new Unit(             
             item.apCurrent, 
             item.apDefault, 
             item.damageCurrent, 
-            item.damageDefault, // TODO unit ???
+            item.damageDefault,
             item.hpCurrent, 
             item.hpDefault, 
             item.id, 
             item.imageFileName,
             item.name, 
-            item.type 
+            item.type
         );
+    }
+}
+
+for ( let action of Action.actions ) {
+    if ( action.unitId ) {
+        for ( let unit of Unit.units ) {
+            if ( unit.id == action.unitId ) {
+                unit.actionsIds.push( action.id );
+            }
+        }
     }
 }
 
@@ -237,8 +364,38 @@ var $units = $( '.unit' );
 var $end = $( '#end' );
 
 $end.addClass( 'end-red' ); //TODO
-
 // $board.click( onBoardClick );
 $cells.click( onCellClick );
 $units.click( onUnitClick );
+// $actions.click( onActionClick );
+// $( 'body' ).on( 'click', '.action', onActionClick );
 $end.click( onEndClick );
+
+
+for ( let action of Action.actions ) {
+        // let $element = $( `<div class="action" id="action-${this.id}">${this.name}</div>`);
+        let $element = $( `<div class="action" id="action-${action.id}">${action.name}</div>`);
+        $( '#unit-actions' ).append( $element ); 
+        action.$element = $element;
+        // action.$element.hide();
+}
+
+var $actions = $( '.action' );
+$actions.click( onActionClick );
+// $( 'body' ).on( 'click', '.action', onActionClick );
+
+
+    //     let $element = $( `<div class="action" id="action-${this.id}">${this.name}</div>`);
+    //     $( '#unit-actions' ).append( $element ); 
+
+    //     // for ( let actionId of unit.actionsIds ) {
+    //     //     let action = Action.getActionById( actionId );
+    //     //     let $element = $( `<div class="action" id="action-${action.id}">${action.name}</div>`);
+    //     //     $( '#unit-actions' ).append( $element ); 
+    //     //     unit.$element = $element;
+    //     // }
+
+
+// как убрать из контекстного меню юнита лишние свойства???
+
+// remove hit_range_current !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

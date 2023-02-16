@@ -1,5 +1,5 @@
 <?php
-require_once 'utilities_mysql.php';
+require_once 'utilities/mysql.php';
 
 function convertObjectToCamelCase( $object ) {
 	$newObject = (object)[];

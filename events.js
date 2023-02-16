@@ -72,7 +72,7 @@ function onEndClick( e ) {
     $end.removeClass( 'end-yellow' );
     $end.removeClass( 'end-green' );
     $end.addClass( 'end-red' );
-    $( '#unitbar' ).text( '' );
+    $( '#unit-stats' ).text( '' );
     updateSidebar(); 
     let isAllUnitsMoved = true;
 
@@ -124,4 +124,27 @@ function onEndClick( e ) {
     }
 
     updateSidebar(); 
+}
+
+function onActionClick( e ) {
+    let $action = $( this );
+    let action = Action.getActionByElement( $action ); 
+    
+    if ( action.isSelected == false ) {
+        for ( let action of Action.actions ) {
+            action.isSelected = false;
+            action.$element.removeClass( 'action-selected' );
+        }
+
+        action.isSelected = true;
+        action.$element.addClass( 'action-selected' );
+    } else {
+        action.isSelected = false;
+        action.$element.removeClass( 'action-selected' );
+    }
+
+    // updateSidebar( unit );
+    updateSidebar();
+
+    markPossibleTargets( action.id );
 }

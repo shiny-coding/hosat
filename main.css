@@ -37,6 +37,22 @@ html, body {
 	text-align: center;
 	background-size: 100%;
 }
+.action {
+	color: black;
+	background-color: rgb(50, 230, 164);
+}
+.action-selected {
+	color: white;
+	background-color: rgb(3, 130, 83);
+}
+
+.possible-target-ally {
+	border: 0.5vmin solid lightgreen;
+}
+
+.possible-target-enemy {
+	border: 0.5vmin solid red;
+}
 
 .team0 {
 	border: 0.5vmin solid black;
@@ -67,7 +83,7 @@ html, body {
 	flex-direction: column;
 	background-color: lightgray;
 }
-#unitbar {
+#unit-stats {
 	background-color: white;
 }
 

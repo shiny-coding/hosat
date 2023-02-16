@@ -244,7 +244,12 @@ function isCellAvailable( $cell ) {
 //     } ); 
 // }
 
+// function getActionById( actionId ) {
+//     //
+// }
+
 function updateSidebar( unit ) {
+// function updateSidebar( unitId ) {
     if ( game.currentTeam ) {    
         $( '#round' ).text( 'Round ' + game.roundCount );
 
@@ -257,26 +262,51 @@ function updateSidebar( unit ) {
             $( '#turn' ).removeClass( 'team0-color' );
             $( '#turn' ).addClass( 'team1-color' );
             $( '#turn' ).text( 'Turn ' + game.turnCount + ' ( White team )' );
-        }    
+        }   
+
+        // let unit = Unit.getUnitById( unitId );
+        
+        // $( '#unit-actions' ).append( $( `<div class="cell" id="${cellId}">` ) );
+
+        // getActionById( actionId );
+
+        // for ( let actionId of unit.actionsIds ) {
+        //     let action = Action.getActionById( actionId );
+
+        //     $( '#unit-actions' ).append( 
+        //         $( `<div class="action" id="action-${action.id}">${action.name}</div>` 
+        //     )); 
+        // }
+
+        // $( '#row-' + row ).append( $( `<div class="cell" id="${cellId}">` ) );  
+        // board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
 
         // $( '#current-player' ).text( getPlayerNameById( game.currentPlayerId ) 
         // + ' ( ' + getPlayerTeamById( game.currentPlayerId ) + ' )' );
     }
     
     if ( unit ) {
-        $( '#unitbar' ).html( `
+        $( '#unit-stats' ).html( `
             ${unit.name}<br>
+            Action Points: ${unit.apCurrent} / ${unit.apDefault}<br> 
             Health Points: ${unit.hpCurrent} / ${unit.hpDefault}<br>
-            Action Points: ${unit.apCurrent} / ${unit.apDefault}<br>        
-            Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>   
+            Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>  
+            Mana Points: ${unit.mpCurrent} / ${unit.mpDefault}<br> 
             Attack Distance: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault} ` 
         ); 
+
+        // for ( let actionId of unit.actionsIds ) {
+        //     let action = Action.getActionById( actionId );
+        //     let $element = $( `<div class="action" id="action-${action.id}">${action.name}</div>`);
+        //     $( '#unit-actions' ).append( $element ); 
+        //     unit.$element = $element;
+        // }
     } else {
-        $( '#unitbar' ).html( '' );
+        $( '#unit-stats' ).html( '' );
 
         // let lastSelectedUnit = getLastSelectedUnit();
 
-        // $( '#unitbar' ).html( `
+        // $( '#unit-stats' ).html( `
         //     ${lastSelectedUnit.name}<br>
         //     Health Points: ${lastSelectedUnit.hpCurrent} / ${lastSelectedUnit.hpDefault}<br>
         //     Action Points: ${lastSelectedUnit.apCurrent} / ${lastSelectedUnit.apDefault}<br>        
@@ -322,6 +352,35 @@ function unsetTeamUnitsUnselectable( unitTeam ) {
     for ( let unit of Unit.units ) {
         if ( unit.team == unitTeam ) {
             unit.$element.removeClass( 'unselectable-unit' );
+        }
+    }
+}
+
+function markPossibleTargets( actionId ) {
+    let choosenUnit = getUnitByActionId( actionId );
+
+    for ( let unit of Unit.units ) {
+        let dx = Math.abs( unit.indexes.x - choosenUnit.indexes.x );
+        let dy = Math.abs( unit.indexes.y - choosenUnit.indexes.y );
+        let distance = dx + dy;
+        // let actionDistance = Action.getActionById( actionId ).id;
+        let action = Action.getActionById( actionId );
+
+        if ( action.distance >= distance ) {
+            if ( unit.team == game.currentTeam ) {
+                unit.$element.addClass( 'possible-target-ally' );
+            } else {
+                unit.$element.addClass( 'possible-target-enemy' );
+            }
+        }
+    }
+
+}
+
+function getUnitByActionId( actionId ) {
+    for ( let unit of Unit.units ) {
+        if ( unit.actionsIds.includes( actionId ) ) {
+            return unit;
         }
     }
 }

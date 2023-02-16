@@ -17,7 +17,27 @@ function getLastUnitId() {
 }
 
 function createNewGameUnits( $game_type ) {
-    $originUnitsData = sqlQueryObjects( 
+    $actions = sqlQueryObjects( 
+        "SELECT ap,
+                area,
+                attribute,
+                damage,
+                distance,
+                duration,
+                effect,
+                id, 
+                image_file_name, 
+                name,
+                sign,
+                target,
+                type,
+                unit_id,
+                value
+        FROM actions" 
+    );
+
+    // $originUnitsData = sqlQueryObjects( 
+    $units = sqlQueryObjects( 
         "SELECT ap_current,
                 ap_default,
                 damage_current,
@@ -29,29 +49,50 @@ function createNewGameUnits( $game_type ) {
                 name, 
                 type
         FROM units
-        WHERE game_id = -1" );
+        WHERE game_id = -1" 
+    );
 
-    return json_encode( $originUnitsData );
+    // $gameData = (object)[];
+
+    $gameData = (object)[
+        'actions' => $actions,
+        'units' => $units
+    ];
+
+    // $gameData = (object)[
+    //     'actions' => (object)[
+    //       'var1' => "something",
+    //       'var2' => "something else",
+    //     ],
+    // ];
 
 
-    $lastUnitId = getLastUnitId();
-    $newGameUnits = [];
+    // return json_encode( $originUnitsData );
+    return json_encode( $gameData );
 
-    foreach ( $originUnitsData as $key => $originUnitData ) {
-        $newGameUnits[ $key ] = clone $originUnitData;
-        $lastUnitId++;
-        $newGameUnits[ $key ]->unitId = $lastUnitId;
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
 
-        if ( $game_type == 's' ) {
-            $newGameUnits[ $key ]->gameType = 's';
-        }        
+
+    // $lastUnitId = getLastUnitId();
+    // $newGameUnits = [];
+
+    // foreach ( $originUnitsData as $key => $originUnitData ) {
+    //     $newGameUnits[ $key ] = clone $originUnitData;
+    //     $lastUnitId++;
+    //     $newGameUnits[ $key ]->unitId = $lastUnitId;
+
+    //     if ( $game_type == 's' ) {
+    //         $newGameUnits[ $key ]->gameType = 's';
+    //     }        
         
-        if ( $game_type == 'm' ) {
-            $newGameUnits[ $key ]->gameType = 'm';
-        }
-    }
+    //     if ( $game_type == 'm' ) {
+    //         $newGameUnits[ $key ]->gameType = 'm';
+    //     }
+    // }
 
-    saveToDBNewGameUnits( $newGameUnits );
+    // saveToDBNewGameUnits( $newGameUnits );
 }
 
 function saveToDBNewGameUnits( $units ) {
