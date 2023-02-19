@@ -1,8 +1,8 @@
 function getCellByElement( $cell ) { 
-    for ( let row = 0; row < board.rows; row++ ) {        
-        for ( let column = 0; column < board.columns; column++ ) {
-            if ( board.cells[ column ][ row ].$element.is( $cell ) ) 
-                return board.cells[ column ][ row ];   
+    for ( let row = 0; row < Board.rows; row++ ) {        
+        for ( let column = 0; column < Board.columns; column++ ) {
+            if ( Board.cells[ column ][ row ].$element.is( $cell ) ) 
+                return Board.cells[ column ][ row ];   
         }
     }
 
@@ -51,40 +51,15 @@ function isOneRoundOneMovedUnit() {
 }
 
 function isCellOfPath( cell ) {
-    for ( let cell of board.cells ) {
+    for ( let cell of Board.cells ) {
         if ( cell.indexes.x == cellIindexes.x && cell.indexes.y == cellIindexes.y ) {
             return cell.$element;
         }
     }
 }
 
-function getUnitClone( unitId ) {
-    for ( let unit of Unit.units ) {
-        if ( unit.id == unitId ) {
-            return cloneObject( unit );
-        }
-    }
-}
 
-function setCellOrHeroElementSize( $cellOrHero ) {
-    let size = vmin2px( 100 / board.rows ); 
-    $cellOrHero.css( 'width', size + 'px' );
-    $cellOrHero.css( 'height', size + 'px' );
-}
 
-function setHeroElementPosition( heroIndexes, heroId ) {    
-    let cellOffset = $( `#cell-${heroIndexes.x}-${heroIndexes.y}` ).offset();
-    $( '#' + heroId ).offset( { top: cellOffset.top, left: cellOffset.left } );
-}
-
-function setHeroBackground( id ) {    
-    for ( let unit of Unit.units ) {
-        if ( unit.type == 'hero' && id == unit.id ) {
-            let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.jpg)';
-            $( '#hero-' + id ).css( 'background-image', imagePath );
-        }
-    }
-}
 
 // function isCellAvailable( $cell ) {
 //     if ( $cell.hasClass( 'available-cell' ) ) {
@@ -102,9 +77,9 @@ function isCellAvailable( $cell ) {
 // function unit.showAvailableCells() {
 //     unit.pathMap = []; // ??? just pathMap without unit !!!
     
-//     for ( let x = 0; x < board.columns; x++ ) {          
+//     for ( let x = 0; x < Board.columns; x++ ) {          
 //         unit.pathMap[ x ] = [];        
-//         for ( let y = 0; y < board.rows; y++ ) {       
+//         for ( let y = 0; y < Board.rows; y++ ) {       
 //             unit.pathMap[ x ][ y ] = -1;
 //         }
 //     }
@@ -116,15 +91,15 @@ function isCellAvailable( $cell ) {
 //     unit.pathMap[ unit.indexes.x ][ unit.indexes.y ] = 0;
 
 //     for ( let i = 1; i <= unit.apCurrent; i++ ) {
-//         for ( let x = 0; x < board.columns; x++ ) {
-//             for ( let y = 0; y < board.rows; y++ ) {
+//         for ( let x = 0; x < Board.columns; x++ ) {
+//             for ( let y = 0; y < Board.rows; y++ ) {
 
 //                 if ( unit.pathMap[ x ][ y ] == i - 1 ) {
 //                     for ( let x2 = x-1; x2 <= x+1; x2++ ) {   
 //                         for ( let y2 = y-1; y2 <= y+1; y2++ ) {
 
-//                             if (    x2 >= 0 && x2 < board.columns &&
-//                                     y2 >= 0 && y2 < board.rows &&                                 
+//                             if (    x2 >= 0 && x2 < Board.columns &&
+//                                     y2 >= 0 && y2 < Board.rows &&                                 
 //                                     Math.abs( x - x2 ) + Math.abs( y - y2 ) <= 1 &&
 //                                     unit.pathMap[ x2 ][ y2 ] == -1   ) {    
                                 
@@ -137,18 +112,18 @@ function isCellAvailable( $cell ) {
 //         }
 //     }
 
-//     for ( let row = 0; row < board.rows; row++ ) {        
-//         for ( let column = 0; column < board.columns; column++ ) {
-//             if ( unit.pathMap[ board.cells[ column ][ row ].indexes.x ][ board.cells[ column ][ row ].indexes.y ] > 0 ) {
-//                 board.cells[ column ][ row ].isAvailable = true; 
-//                 board.cells[ column ][ row ].$element.addClass( 'available-cell' );            
+//     for ( let row = 0; row < Board.rows; row++ ) {        
+//         for ( let column = 0; column < Board.columns; column++ ) {
+//             if ( unit.pathMap[ Board.cells[ column ][ row ].indexes.x ][ Board.cells[ column ][ row ].indexes.y ] > 0 ) {
+//                 Board.cells[ column ][ row ].isAvailable = true; 
+//                 Board.cells[ column ][ row ].$element.addClass( 'available-cell' );            
 //             }
 //         }
 //     }
 
 //     // let a=5;
 
-//     // for ( let cell of board.cells ) {
+//     // for ( let cell of Board.cells ) {
 //     //     if ( unit.pathMap[ cell.indexes.x ][ cell.indexes.y ] > 0 ) {
 //     //         cell.isCellAvailable = true; 
 //     //         cell.$element.addClass( 'available-cell' );            
@@ -171,7 +146,7 @@ function isCellAvailable( $cell ) {
 
 //         for ( let x = current.x - 1; x <= current.x + 1; x++ ) {   
 //             for ( let y = current.y - 1; y <= current.y + 1; y++ ) {
-//                 if ( y < 0 || y > board.rows - 1 || x < 0 || x > board.columns - 1 ) continue;
+//                 if ( y < 0 || y > Board.rows - 1 || x < 0 || x > Board.columns - 1 ) continue;
 
 //                 if ( unit.pathMap[ x ][ y ] == currentDistance - 1 ) {
 //                     let isHorizontalMovement = Math.abs( x - current.x ) != 0 && Math.abs( y - current.y ) == 0;                    
@@ -199,12 +174,12 @@ function isCellAvailable( $cell ) {
 //     movePath.push( cellIindexes );      
 //     unit.movePath = movePath;
 
-//     for ( let row = 0; row < board.rows; row++ ) {        
-//         for ( let column = 0; column < board.columns; column++ ) {
+//     for ( let row = 0; row < Board.rows; row++ ) {        
+//         for ( let column = 0; column < Board.columns; column++ ) {
 //             for ( let step of movePath ) {
 //                 if ( column == step.x && row == step.y ) {
-//                     board.cells[ column ][ row ].isPathCell = true;
-//                     board.cells[ column ][ row ].$element.addClass( 'path-cell' ); 
+//                     Board.cells[ column ][ row ].isPathCell = true;
+//                     Board.cells[ column ][ row ].$element.addClass( 'path-cell' ); 
 //                 }  
 //             }
 //         }
@@ -279,7 +254,7 @@ function updateSidebar( unit ) {
         // }
 
         // $( '#row-' + row ).append( $( `<div class="cell" id="${cellId}">` ) );  
-        // board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
+        // Board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
 
         // $( '#current-player' ).text( getPlayerNameById( game.currentPlayerId ) 
         // + ' ( ' + getPlayerTeamById( game.currentPlayerId ) + ' )' );

@@ -7,7 +7,7 @@ html, body {
 #container {
 	display: flex;
 }
-#board {
+#Board {
 	display: flex;
 	flex-direction: column;
 }

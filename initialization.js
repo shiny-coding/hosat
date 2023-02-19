@@ -8,8 +8,8 @@ const TEAMS = [ 'black', 'white' ];
 
 function initialization() {
     initPlayers();
-    initGame();
-    initBoard();
+    // initGame();
+    // initBoard();
     initHeroes( gameData );
     initSidebar();
 }
@@ -30,35 +30,35 @@ function initPlayers() {
     ];
 }
 
-function initGame() {
-    game = {
-        teamChooseFase: true,
-        roundCount: 1,
-        turnCount: 1,
-        currentTeam: undefined,
-        currentPlayerId: undefined
-    }   
-}
+// function initGame() {
+//     game = {
+//         teamChooseFase: true,
+//         roundCount: 1,
+//         turnCount: 1,
+//         currentTeam: undefined,
+//         currentPlayerId: undefined
+//     }   
+// }
 
 function initBoard() {
-    board = {
-        $element : $( '#board' ),
+    Board = {
+        $element : $( '#Board' ),
         rows: ( NUMBER_OF_HEROES_IN_COLUMN - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_COLUMN,
         columns: ( NUMBER_OF_HEROES_IN_ROW - 1 ) * NUMBER_OF_CELLS_BETWEEN_HEROES + NUMBER_OF_HEROES_IN_ROW,
         cells : [],
-        isSelectionBlocked: false
+        // isSelectionBlocked: false
     }
     
-    for ( let row = 0; row < board.rows; row++ ) {
-        board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
+    for ( let row = 0; row < Board.rows; row++ ) {
+        Board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
     }
 
-    for ( let column = 0; column < board.columns; column++ ) { 
-        board.cells[ column ] = [];
+    for ( let column = 0; column < Board.columns; column++ ) { 
+        Board.cells[ column ] = [];
     }
 
-    for ( let row = 0; row < board.rows; row++ ) {        
-        for ( let column = 0; column < board.columns; column++ ) {
+    for ( let row = 0; row < Board.rows; row++ ) {        
+        for ( let column = 0; column < Board.columns; column++ ) {
             let cellId = `cell-${column}-${row}`;                    
             $( '#row-' + row ).append( $( `<div class="cell" id="${cellId}">` ) );        
             let $cell = $( '#' + cellId );       
@@ -67,11 +67,11 @@ function initBoard() {
             cell.indexes = { x: column, y: row };
             cell.isAvailable = false;
             cell.isPathCell = false; 
-            let cellSize = vmin2px( 100 / board.rows ); 
+            let cellSize = vmin2px( 100 / Board.rows ); 
             $cell.css( 'width', cellSize + 'px' );
             $cell.css( 'height', cellSize + 'px' );
-            setCellOrHeroElementSize( $cell );
-            board.cells[ column ][ row ] = cell;
+            setCellOrUnitElementSize( $cell );
+            Board.cells[ column ][ row ] = cell;
             $cell.text(column + '-' + row); //TODO   
         }    
     }
@@ -89,19 +89,19 @@ function initHeroes( heroesData ) {
     let randomHeroesTeams = shuffle( [  0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 ] );
     let heroCounter = 0;
 
-    for ( let row = 0; row < board.rows; row++ ) {
-        for ( let column = 0; column < board.columns; column++ ) {
+    for ( let row = 0; row < Board.rows; row++ ) {
+        for ( let column = 0; column < Board.columns; column++ ) {
             if ( column % ( NUMBER_OF_CELLS_BETWEEN_HEROES + 1 ) == 0 &&
                  row % ( NUMBER_OF_CELLS_BETWEEN_HEROES + 1 ) == 0 &&
                  heroCounter < NUMBER_OF_HEROES_IN_ROW * NUMBER_OF_HEROES_IN_COLUMN ) { 
 
                 let heroId = `hero-${randomHeroesId[ heroCounter ]}`;                                    
-                board.$element.append( $( `<div class="unit hero" id="${heroId}">` ) );    
+                Board.$element.append( $( `<div class="unit hero" id="${heroId}">` ) );    
                 let $hero = $( '#' + heroId ); 
                 let heroIndexes = { x: column, y: row };  
-                setCellOrHeroElementSize( $hero );     
-                setHeroElementPosition( heroIndexes, heroId );    
-                setHeroBackground( randomHeroesId[ heroCounter ] );
+                setCellOrUnitElementSize( $hero );     
+                setUnitElementPosition( heroIndexes, heroId );    
+                setUnitBackground( randomHeroesId[ heroCounter ] );
                 let team = randomHeroesTeams[ randomHeroesId[ heroCounter ] ];  
 
                 if ( team == 0 ) {
