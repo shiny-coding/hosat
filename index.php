@@ -15,7 +15,7 @@
 </head>
 <body>
     <div id="container">
-        <div id="Board"></div>
+        <div id="board"></div>
         <div id="sidebar">
             <div id="round"></div>
             <div id="turn"></div>   
@@ -28,21 +28,16 @@
             </div>
             <div id="end">End</div>
         </div>
-    </div>    
-    <!-- <script src="utilities/utilities.js"></script>
-    <script src="functions_js.js"></script>
-    <script src="events.js"></script>
-    <script src="initialization.js"></script>    
-    <script src="main.js"></script>  -->
+    </div> 
 
     <script src="utilities/utilities.js"></script>
     <script src="classes/Game.js"></script>
-    <script src="classes/Cell.js"></script>
-    <script src="classes/Unit.js"></script>
     <script src="classes/Board.js"></script>
+    <script src="classes/Cell.js"></script>
+    <script src="classes/Action.js"></script>
+    <script src="classes/Unit.js"></script>
+        
     <script src="functions_js.js"></script>
-    <script src="events.js"></script>
-    <script src="initialization.js"></script>    
     <script src="main.js"></script> 
 </body>
 </html>

@@ -1,5 +1,22 @@
 class Action {
-    constructor( ap, area, attribute, damage, duration, effect, id, imageFileName, name, distance, sign, target, type, unitId, value ) {
+    constructor( 
+        ap, 
+        area, 
+        attribute, 
+        damage, 
+        duration, 
+        effect, 
+        id, 
+        imageFileName, 
+        name, 
+        distance, 
+        sign, 
+        target, 
+        type, 
+        unitId, 
+        value,
+        $element
+    ) {
         this.ap = ap;
         this.area = area;
         this.attribute = attribute;
@@ -16,11 +33,51 @@ class Action {
         this.type = type;  
         this.unitId = unitId; 
         this.value = value; 
-        this.$element = undefined;
-        // Action.actions.push( this );
+        this.$element = $element;
+        this.$element.click( this.onActionClick );
+        // $( 'body' ).on( 'click', '.action', onActionClick );
     }
 
-    // static actions = [];
+    static actions = [];
+    static $actions = $( '.action' );
+
+    static createActions( gameData ) {
+        let actions = [];
+        //TODO
+        // type: buff, debuff, damage, control, 
+        // air : 1.Haste. 2. wind blow
+        // spells: magic mirror, 
+        // earth: slow, rock armor
+        // Stats Enhancement
+        // Stats Weakening
+        // Displacement смещение
+        for ( let item of gameData.actions ) {
+            let $element = $( `<div class="action" id="action-${item.id}">${item.name}</div>`);
+            let action = new Action( 
+                item.ap,
+                item.area, 
+                item.attribute,
+                item.damage, 
+                item.duration, 
+                item.effect, 
+                item.id, 
+                item.imageFileName,
+                item.name, 
+                item.distance,
+                item.sign,
+                item.target,
+                item.type,
+                item.unitId, 
+                item.value,
+                $element
+            );
+
+            actions.push( action );
+            $( '#unit-actions' ).append( $element ); 
+        }
+
+        return actions;
+    }
 
     static getActionById( actionId ) {
         for ( let action of Action.actions ) {
@@ -38,15 +95,25 @@ class Action {
         }
     }
 
-    // static createActionElement() {
-    //     let $element = $( `<div class="action" id="action-${this.id}">${this.name}</div>`);
-    //     $( '#unit-actions' ).append( $element ); 
-
-    //     // for ( let actionId of unit.actionsIds ) {
-    //     //     let action = Action.getActionById( actionId );
-    //     //     let $element = $( `<div class="action" id="action-${action.id}">${action.name}</div>`);
-    //     //     $( '#unit-actions' ).append( $element ); 
-    //     //     unit.$element = $element;
-    //     // }
-    // }
+    onActionClick( event ) {
+        let $action = $( this );
+        let action = Action.getActionByElement( $action ); 
+        
+        if ( action.isSelected == false ) {
+            for ( let action of Action.actions ) {
+                action.isSelected = false;
+                action.$element.removeClass( 'action-selected' );
+            }
+    
+            action.isSelected = true;
+            action.$element.addClass( 'action-selected' );
+        } else {
+            action.isSelected = false;
+            action.$element.removeClass( 'action-selected' );
+        }
+    
+        Unit.updateInfoPanel();
+    
+        markPossibleTargets( action.id );
+    }
 }
