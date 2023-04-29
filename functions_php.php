@@ -44,6 +44,8 @@ function createNewGameUnits( $game_type ) {
                 damage_default,
                 hp_current,
                 hp_default,
+                hit_range_current,
+                hit_range_default,
                 id, 
                 image_file_name, 
                 name, 

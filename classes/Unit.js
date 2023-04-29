@@ -131,7 +131,7 @@ class Unit {
      * @param {Unit} unit
      */
     static setUnitBackground( unit ) {
-        let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.jpg)';
+        let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.png)';
         $( '#unit-' + unit.id ).css( 'background-image', imagePath );
     }
 
