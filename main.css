@@ -15,8 +15,15 @@ html, body {
 	display: flex;
 }
 .cell {
-	border: 0.1vmin solid #cdcdcd;
-	background-color: #dcdcdc;	
+	/* border: 0.1vmin solid #cdcdcd; */
+	/* background-color: #dcdcdc;	 */
+	/* background-color: #ababab;	 */
+	background-color: #ababab;	
+
+	/* border: 0.1vmin solid 8b8b8b; */
+	border: 0.1vmin solid #8b8b8b;
+
+/* для каждого бэкграунда - свой стиль!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 	box-sizing: border-box;
 	user-select: none;
 	font-size: small; 
@@ -35,12 +42,30 @@ html, body {
 	box-sizing: border-box;
 	font-size: 1.5vmin;
 	text-align: center;
-	background-size: 100%;
-
 	background-repeat: no-repeat;
     background-size: 70% 70%;
 	background-position: center;
 }
+
+.air_mage_600_600 {
+	background-size: 50% 50%;
+}
+.black_mage_615_615 {
+	background-size: 60% 60%;
+}
+.bowman_800_795 {
+	background-size: 60% 60%;
+}
+.fire_mage_600_600 {
+	background-size: 60% 60%;
+}
+.summoner_mage_600_600 {
+	background-size: 60% 60%;
+}
+.water_mage_980_980 {
+	background-size: 80% 80%;
+}
+
 .action {
 	color: black;
 	background-color: rgb(50, 230, 164);
@@ -59,20 +84,24 @@ html, body {
 }
 
 .team0 {
-	border: 0.5vmin solid black;
-}
-.team0-color {
-	color: black;
+	border: 0.1vmin solid white;
 	background-color: lightgray;
 }
+/* .team0-color {
+	color: black;
+	background-color: lightgray;
+} */
 
 .team1 {
-	border: 0.5vmin solid white;
-}
-.team1-color {
-	color: white;
+	border: 0.1vmin solid black;
 	background-color: gray;
 }
+/* .team1-color {
+	color: white;
+	background-color: gray;
+} */
+
+
 
 .moved {
 	opacity: 0.3;

@@ -104,6 +104,7 @@ class Unit {
                     Unit.setUnitElementSize( unit );
                     Unit.setUnitElementPosition( unit );    
                     Unit.setUnitBackground( unit );
+                    unit.$element.addClass( `${currentUnit.imageFileName}` );
                     unitCounter++;
                 }
             }    
@@ -133,6 +134,12 @@ class Unit {
     static setUnitBackground( unit ) {
         let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.png)';
         $( '#unit-' + unit.id ).css( 'background-image', imagePath );
+
+        if ( unit.team == Game.game.TEAMS[ 0 ] ) {
+            $( '#unit-' + unit.id ).addClass( 'team0' );
+        } else {
+            $( '#unit-' + unit.id ).addClass( 'team1' );
+        }
     }
 
     /**
