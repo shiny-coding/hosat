@@ -4,6 +4,8 @@ class Unit {
         apDefault, 
         damageCurrent, 
         damageDefault, 
+        hitRangeCurrent,
+        hitRangeDefault,
         hpCurrent, 
         hpDefault, 
         id, 
@@ -19,6 +21,8 @@ class Unit {
         this.apDefault = apDefault;    
         this.damageCurrent = damageCurrent;   
         this.damageDefault = damageDefault; 
+        this.hitRangeCurrent = hitRangeCurrent;   
+        this.hitRangeDefault = hitRangeDefault; 
         this.hpCurrent = hpCurrent;  
         this.hpDefault = hpDefault;  
         this.id = id;
@@ -27,7 +31,7 @@ class Unit {
         this.isCurrent = false; // for teamChooseFase
         this.isMoved = false;
         this.isPartlyMoved = false;
-        this.isSelected = false;
+        // this.isSelected = false;
         this.movePath = undefined;
         this.name = name;
         this.pathMap = [];
@@ -84,6 +88,8 @@ class Unit {
                         currentUnit.apDefault,  
                         currentUnit.damageCurrent,   
                         currentUnit.damageDefault,
+                        currentUnit.hitRangeCurrent,   
+                        currentUnit.hitRangeDefault,
                         currentUnit.hpCurrent, 
                         currentUnit.hpDefault,
                         currentUnit.id,
@@ -106,6 +112,8 @@ class Unit {
                     Unit.setUnitBackground( unit );
                     unit.$element.addClass( `${currentUnit.imageFileName}` );
                     unitCounter++;
+
+                    unit.$element.append( `<div class="healthbar">` );  
                 }
             }    
         }
@@ -153,18 +161,18 @@ class Unit {
         }
     }
 
-    /**
-     * @param {Unit} unit
-     */
-    static getSelectedUnit() {
-        for ( let unit of Unit.units ) {
-            if ( unit.isSelected == true) {
-                return unit;
-            }
-        }
+    // /**
+    //  * @param {Unit} unit
+    //  */
+    // static getSelectedUnit() {
+    //     for ( let unit of Unit.units ) {
+    //         if ( unit.isSelected == true) {
+    //             return unit;
+    //         }
+    //     }
     
-        return false;
-    }
+    //     return false;
+    // }
 
     /**
      * @param {Unit} unit
@@ -179,22 +187,80 @@ class Unit {
         return false;
     }
 
-    static updateInfoPanel() { // updateUnitInfoPanel ??!!
+    static isThereAPartlyMovedUnit() {
+        for ( let unit of Unit.units ) {
+            if (    unit.apCurrent < unit.apDefault && 
+                    unit.apCurrent > 0 && 
+                    !unit.isMoved ) 
+                return true;
+        }
+
+        return false;
+    }
+
+    static updateInfoPanel( unit ) { // updateUnitInfoPanel ??!!
         // let unit = Unit.getCurrentUnit();
-        let unit = Unit.getSelectedUnit();
+        // let unit = Unit.getSelectedUnit();
+        
+        // Board.$element.append( `<div class="unit" id="unit-${heroId}">` );
+
+
+        // $( '#unit-stats' ).html( `
+        //     ${unit.name}<br>
+        //     <div class=""><img src="${imgSrc}">Action Points: ${unit.apCurrent} / ${unit.apDefault}</div> 
+        //     Health Points: ${unit.hpCurrent} / ${unit.hpDefault}<br>
+        //     Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>  
+        //     Mana Points: ${unit.mpCurrent} / ${unit.mpDefault}<br> 
+        //     Attack Distance: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault} ` 
+        // ); 
+
+        // $( '#unit-stats' ).html( `
+        //     ${unit.name}<br>
+        //     <div id="action-points" class=""><img src="${imgSrc}">Action Points: ${unit.apCurrent} / ${unit.apDefault}</div> 
+        //     Health Points: ${unit.hpCurrent} / ${unit.hpDefault}<br>
+        //     Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>  
+        //     Mana Points: ${unit.mpCurrent} / ${unit.mpDefault}<br> 
+        //     Attack Distance: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault} ` 
+        // ); 
+
+        // $('#unit-stats #action-points img').attr('src', );
+
+        // if ( unit ) {
+        //     $( '#unit-stats' ).html( `
+        //         ${unit.name}<br>
+        //         Action Points: ${unit.apCurrent} / ${unit.apDefault}<br> 
+        //         Health Points: ${unit.hpCurrent} / ${unit.hpDefault}<br>
+        //         Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>  
+        //         Mana Points: ${unit.mpCurrent} / ${unit.mpDefault}<br> 
+        //         Attack Distance: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault} ` 
+        //     ); 
+        // } else {
+        //     $( '#unit-stats' ).html( '' );
+        // }
+
+        // let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.png)';
         
         if ( unit ) {
             $( '#unit-stats' ).html( `
                 ${unit.name}<br>
-                Action Points: ${unit.apCurrent} / ${unit.apDefault}<br> 
+                <div id="action-points" class="attribute"><img src="">
+                    Action Points: ${unit.apCurrent} / ${unit.apDefault}
+                </div> 
                 Health Points: ${unit.hpCurrent} / ${unit.hpDefault}<br>
                 Damage: ${unit.damageCurrent} / ${unit.damageDefault}<br>  
-                Mana Points: ${unit.mpCurrent} / ${unit.mpDefault}<br> 
-                Attack Distance: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault} ` 
-            ); 
+                <div id="mana-points" class="attribute"><img src="">
+                    Mana Points: ${unit.mpCurrent} / ${unit.mpDefault}
+                </div> 
+                <div id="hit-range" class="attribute"><img src="">
+                    Hit Range: ${unit.hitRangeCurrent} / ${unit.hitRangeDefault}
+                </div> 
+            ` ); 
         } else {
             $( '#unit-stats' ).html( '' );
         }
+
+        $( '#unit-stats #mana-points img' ).attr( 'src', '/images/attributes/' + 'mana_points_512_512' + '.png' );
+        $( '#unit-stats #hit-range img' ).attr( 'src', '/images/attributes/' + 'hit_range_500_500' + '.png' );
     }
 
     showAvailableCells() {        
@@ -231,6 +297,10 @@ class Unit {
                     }
                 }
             }
+        }
+
+        for ( let cell of Cell.cells ) {            
+            cell.isAvailable = false; 
         }
 
         for ( let cell of Cell.cells ) {
@@ -323,6 +393,7 @@ class Unit {
     
                 if ( this.movePath.length > 0 ) {                    
                     this.animateMoveByPath();  
+                    // this.markPossibleTargets();
                 } else {
                     Game.game.isSelectionBlocked = false;
                     if ( this.apCurrent == 0 ) {
@@ -333,28 +404,43 @@ class Unit {
                         Game.game.$end.addClass( 'end-green' );
                     }
                 }  
+
+                this.markPossibleTargets();
             }.bind( this )
         } ); 
     }
 
-    // markPossibleTargets() {
-    //     for ( let unit of Unit.units ) {
-    //         let dx = Math.abs( unit.indexes.x - this.indexes.x );
-    //         let dy = Math.abs( unit.indexes.y - this.indexes.y );
-    //         let distance = dx + dy;
-    //         if ( this. >= distance ) {
-    //             hero.$element.addClass( 'attackable' );
-    //         }
-    //     }
-    // }
+    markPossibleTargets() {
+        for ( let unit of Unit.units ) {
+            unit.$element.removeClass( 'attackable' );         
+        }
+        
+        for ( let unit of Unit.units ) {
+            if ( this.isCurrent && ( unit.team != this.team ) ) {
+                let dx = Math.abs( unit.indexes.x - this.indexes.x );
+                let dy = Math.abs( unit.indexes.y - this.indexes.y );
+                let distance = dx + dy;
+                if ( this.hitRangeCurrent >= distance ) {
+                    unit.$element.addClass( 'attackable' );
+                }
+            }
+        }
+    }
 
     onUnitClick( event ) {
         if ( Game.game.isSelectionBlocked ) return;  
 
+        for ( let unit of Unit.units ) {
+            unit.$element.removeClass( 'attackable' );
+        } 
+
         let $unit = $( this );
         let unit = Unit.getUnitByElement( $unit );    
-        for ( let unit of Unit.units ) unit.isSelected = false;
-        unit.isSelected = true;  
+        // for ( let unit of Unit.units ) {
+        //     unit.isSelected = false;
+        //     unit.$element.removeClass( 'attackable' );
+        // } 
+        // unit.isSelected = true;          
         
         if ( Game.game.teamChooseFase ) {
             if ( unit.isCurrent ) {
@@ -378,15 +464,26 @@ class Unit {
                 Game.game.turnCount = 1;            
                 Game.game.teamChooseFase = false;
                 Game.game.updateTurnsInfoPanel();
-                Unit.updateInfoPanel();
+                // Unit.updateInfoPanel();     
+                unit.markPossibleTargets();           
             } else {
                 for ( let unit of Unit.units ) unit.isCurrent = false;
                 unit.isCurrent = true;
                 // return;
             }
+
+            Unit.updateInfoPanel(); 
+            return;
         }
 
-        Unit.updateInfoPanel(); 
+        // unit.isCurrent = true;  // ???????????????????????????????????!!!!!!!!!!!!!!!!!!!!!!!!!!!! isCurrent or isSelected
+        Unit.updateInfoPanel( unit ); 
+
+        // for ( let unit of Unit.units ) {
+        //     unit.isSelected = false;
+        //     unit.$element.removeClass( 'attackable' );
+        // } 
+
         let isThereAPartlyMovedUnit = Unit.isThereAPartlyMovedUnit();
 
         if ( Game.game.currentTeam == unit.team
@@ -396,17 +493,22 @@ class Unit {
             unit.showAvailableCells();
             for ( let unit of Unit.units ) unit.isCurrent = false;
             unit.isCurrent = true;
-        } 
-    }
-
-    static isThereAPartlyMovedUnit() {
-        for ( let unit of Unit.units ) {
-            if (    unit.apCurrent < unit.apDefault && 
-                    unit.apCurrent > 0 && 
-                    !unit.isMoved ) 
-                return true;
+            unit.markPossibleTargets();
         }
 
-        return false;
+        // if ( unit.hasClass( 'attackable' ) 
+        //         && Game.game.currentTeam != unit.team ) {
+
+        //     let currentUnitDamage = undefined;
+
+        //     for ( let unit of Unit.units ) {
+        //         if ( unit.isCurrent == true ) {
+        //             currentUnitDamage = unit.damageCurrent;
+        //         }
+        //     } 
+
+        //     unit.hpCurrent -= currentUnitDamage;
+        //     Unit.updateInfoPanel(); 
+        // }                
     }
 }

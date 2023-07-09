@@ -81,6 +81,10 @@ class Cell {
         if ( cell.isPathCell ) {
             unit.animateMoveByPath();     
         } else if ( cell.isAvailable ) {
+            for ( let cell of Cell.cells ) {
+                cell.isPathCell = false;        
+            }
+
             Cell.$cells.removeClass( 'path-cell' ); 
             unit.drawMovePath( $cell );       
         }

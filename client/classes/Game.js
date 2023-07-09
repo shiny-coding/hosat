@@ -63,6 +63,7 @@ class Game {
             Game.game.turnCount = 1;
     
             for ( let unit of Unit.units ) {
+                unit.isCurrent = false;
                 unit.isPartlyMooved = false;
                 unit.isMooved = false;
                 unit.apCurrent = unit.apDefault; //TODO учесть заклинания
@@ -85,7 +86,7 @@ class Game {
 
         for ( let unit of Unit.units ) {
             unit.isCurrent = false;
-            unit.isSelected = false;
+            // unit.isSelected = false;
         }
     
         if ( Game.game.currentTeam == Game.game.TEAMS[0] ) {
