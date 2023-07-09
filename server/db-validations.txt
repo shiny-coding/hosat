@@ -1,0 +1,28 @@
+add later:
+
+
+	// await db.command( {
+	// 	"collMod": process.env.ACCOUNTS_COLLECTION_NAME,
+	// 	"validator": {
+	// 		$jsonSchema: {
+	// 			bsonType: "object",
+	// 			required: ["username", "passwordHash", "tracks"],
+	// 			additionalProperties: false,
+	// 			properties: {
+	// 				_id: {},
+	// 				username: {
+	// 					bsonType: "string",
+	// 					description: "'username' is required and is a string"
+	// 				},
+	// 				passwordHash: {
+	// 					bsonType: "string",
+	// 					description: "'passwordHash' is required and is a string"
+	// 				},
+	// 				tracks: {
+	// 					bsonType: "array",
+	// 					description: "'tracks' is required and is an array"
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// } );
