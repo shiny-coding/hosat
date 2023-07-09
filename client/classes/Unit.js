@@ -1,32 +1,6 @@
 class Unit {
-    constructor( 
-        apCurrent, 
-        apDefault, 
-        damageCurrent, 
-        damageDefault, 
-        hitRangeCurrent,
-        hitRangeDefault,
-        hpCurrent, 
-        hpDefault, 
-        id, 
-        imageFileName, 
-        indexes,
-        name, 
-        team,
-        type,
-        $unit 
-    ) {  
-        this.actionsIds = [];
-        this.apCurrent = apCurrent;   
-        this.apDefault = apDefault;    
-        this.damageCurrent = damageCurrent;   
-        this.damageDefault = damageDefault; 
-        this.hitRangeCurrent = hitRangeCurrent;   
-        this.hitRangeDefault = hitRangeDefault; 
-        this.hpCurrent = hpCurrent;  
-        this.hpDefault = hpDefault;  
-        this.id = id;
-        this.imageFileName = imageFileName;
+    constructor( indexes, team, $unit ) {
+
         this.indexes = indexes;
         this.isCurrent = false; // for teamChooseFase
         this.isMoved = false;
@@ -35,87 +9,57 @@ class Unit {
         this.movePath = undefined;
         this.name = name;
         this.pathMap = [];
-        this.team = team;
-        this.type = type;
         this.$element = $unit;
         this.$element.click( this.onUnitClick );
-        // $( 'body' ).on( 'click', '.action', onActionClick );
-        // this.$element.on( 'click', '.action', this.onUnitClick );
     }
 
     static units = [];
     static $units = $( '.unit' );
 
-    static createUnits( gameData ) {
-        let randomHeroesId = shuffle( [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] );        
+    static createUnits( gameData, allActions ) {
+        let randomHeroesIndexes = shuffle( [ ...Array( gameData.heroes.length ).keys() ] );
         let randomHeroesTeams = shuffle( [  0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 ] );
         let unitCounter = 0;
-        let actions = Action.createActions( gameData );
-    
+
         for ( let row = 0; row < Board.ROWS; row++ ) {
             for ( let column = 0; column < Board.COLUMNS; column++ ) {
                 if ( column % ( Board.NUMBER_OF_CELLS_BETWEEN_HEROES + 1 ) == 0 &&
-                     row % ( Board.NUMBER_OF_CELLS_BETWEEN_HEROES + 1 ) == 0 &&
-                     unitCounter < Board.NUMBER_OF_HEROES_IN_ROW * Board.NUMBER_OF_HEROES_IN_COLUMN ) { 
-    
-                    // let $element = $( `<div class="unit hero" id="hero-${randomHeroesId[unitCounter]}">` );    
-                    // TODO change ( REMOVE ) hero (left unit)   
-                    let heroId = randomHeroesId[ unitCounter ];                
-                    Board.$element.append( `<div class="unit" id="unit-${heroId}">` );    
-                    let heroIndexes = { x: column, y: row };  
-                    let team = randomHeroesTeams[ unitCounter ];  
-                    let $element = $( `#unit-${heroId}`);
-    
+                    row % ( Board.NUMBER_OF_CELLS_BETWEEN_HEROES + 1 ) == 0 &&
+                    unitCounter < Board.NUMBER_OF_HEROES_IN_ROW * Board.NUMBER_OF_HEROES_IN_COLUMN ) {
+
+                    let heroIndex = randomHeroesIndexes[ unitCounter ];
+					let hero = gameData.heroes[ heroIndex ];
+
+                    Board.$element.append( `<div class="unit" id="unit-${hero._id}">` );
+                    let heroIndexes = { x: column, y: row };
+                    let team = randomHeroesTeams[ unitCounter ];
+                    let $element = $( `#unit-${hero._id}`);
+
                     if ( team == 0 ) {
                         $element.addClass( 'team0' );
                     } else {
                         $element.addClass( 'team1' );
                     }
 
-                    let actionsIds = [];
+					let actions = allActions.filter( action => hero.actions.includes( action.name ) )
 
-                    for ( let action of actions ) {
-                        if ( action.unitId == heroId ) {
-                            actionsIds.push( action.id );
-                        }
-                    }
-
-                    let currentUnit = gameData.units[ heroId ];
-
-                    let unit = new Unit( 
-                        // actionsIds,
-                        currentUnit.apCurrent,   
-                        currentUnit.apDefault,  
-                        currentUnit.damageCurrent,   
-                        currentUnit.damageDefault,
-                        currentUnit.hitRangeCurrent,   
-                        currentUnit.hitRangeDefault,
-                        currentUnit.hpCurrent, 
-                        currentUnit.hpDefault,
-                        currentUnit.id,
-                        currentUnit.imageFileName,
+                    let unit = new Unit(
                         heroIndexes,
-                        // false, //isCurrent,
-                        // false, //isMoved,
-                        // false, //isPartlyMoved,
-                        // undefined, //movePath,
-                        currentUnit.name,
-                        // undefined, //pathMap,
                         Game.game.TEAMS[ team ],
-                        currentUnit.type,
                         $element
                     );
+					Object.assign( unit, hero, { actions } );
 
                     Unit.units.push( unit );
                     Unit.setUnitElementSize( unit );
-                    Unit.setUnitElementPosition( unit );    
+                    Unit.setUnitElementPosition( unit );
                     Unit.setUnitBackground( unit );
                     unit.$element.addClass( `${currentUnit.imageFileName}` );
                     unitCounter++;
 
-                    unit.$element.append( `<div class="healthbar">` );  
+                    unit.$element.append( `<div class="healthbar">` );
                 }
-            }    
+            }
         }
     }
 

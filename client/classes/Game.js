@@ -25,7 +25,7 @@ class Game {
 
     static game = {};
 
-    static createGame() {          
+    static createGame() {
         Game.game = new Game();
         Game.game.initiateTurnsInfoPanel();
     }

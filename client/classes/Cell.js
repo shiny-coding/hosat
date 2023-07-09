@@ -21,24 +21,24 @@ class Cell {
      */
     static createCells() {
         for ( let row = 0; row < Board.ROWS; row++ ) {
-            Board.$element.append( $( `<div class="row" id="row-${row}">` ) ); 
+            Board.$element.append( $( `<div class="row" id="row-${row}">` ) );
         }
 
         let cellCounter = 0;
-        for ( let row = 0; row < Board.ROWS; row++ ) {        
+        for ( let row = 0; row < Board.ROWS; row++ ) {
             for ( let column = 0; column < Board.COLUMNS; column++ ) {
-                let cellId = cellCounter;                 
+                let cellId = cellCounter;
                 let $element = $( `<div class="cell" id="cell-${column}-${row}">` );
-                $( '#row-' + row ).append( $element ); 
+                $( '#row-' + row ).append( $element );
 
-                let cell = new Cell( 
-                    cellId, 
-                    { x: column, y: row }, 
-                    $element 
+                let cell = new Cell(
+                    cellId,
+                    { x: column, y: row },
+                    $element
                 );
 
                 Cell.cells.push( cell );
-                let cellSize = vmin2px( 100 / Board.ROWS ); 
+                let cellSize = vmin2px( 100 / Board.ROWS );
                 cell.$element.css( 'width', cellSize + 'px' );
                 cell.$element.css( 'height', cellSize + 'px' );
                 Cell.setCellElementSize( cell );
