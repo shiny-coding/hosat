@@ -1,14 +1,14 @@
 class Cell {
-    constructor( 
-        id, 
-        indexes, 
-        $cell 
-    ) {     
-        this.id = id;   
+    constructor(
+        id,
+        indexes,
+        $cell
+    ) {
+        this.id = id;
         this.indexes = indexes;
         this.isAvailable = false;
-        this.isPathCell = false; 
-        this.$element = $cell;     
+        this.isPathCell = false;
+        this.$element = $cell;
         this.$element.click( this.onCellClick );
     }
 
@@ -53,7 +53,7 @@ class Cell {
      * @param {Cell} cell
      */
     static setCellElementSize( cell ) {
-        let size = vmin2px( 100 / Board.ROWS ); 
+        let size = vmin2px( 100 / Board.ROWS );
         cell.$element.css( 'width', size + 'px' );
         cell.$element.css( 'height', size + 'px' );
     }
@@ -61,7 +61,7 @@ class Cell {
     /**
      * @param {Cell} cell
      */
-    static getCellByElement( $cell ) { 
+    static getCellByElement( $cell ) {
         for ( let cell of Cell.cells ) {
             if ( cell.$element.is( $cell ) ) {
                 return cell;
@@ -70,23 +70,23 @@ class Cell {
     }
 
     onCellClick( event ) {
-        if ( Game.game.teamChooseFase || Game.game.isSelectionBlocked ) return;   
-    
+        if ( Game.game.teamChooseFase || Game.game.isSelectionBlocked ) return;
+
         let unit = Unit.getCurrentUnit();
         if ( !unit ) return;
-    
-        let $cell = $( this ); 
-        let cell = Cell.getCellByElement( $cell ); 
-    
+
+        let $cell = $( this );
+        let cell = Cell.getCellByElement( $cell );
+
         if ( cell.isPathCell ) {
-            unit.animateMoveByPath();     
+            unit.animateMoveByPath();
         } else if ( cell.isAvailable ) {
             for ( let cell of Cell.cells ) {
-                cell.isPathCell = false;        
+                cell.isPathCell = false;
             }
 
-            Cell.$cells.removeClass( 'path-cell' ); 
-            unit.drawMovePath( $cell );       
+            Cell.$cells.removeClass( 'path-cell' );
+            unit.drawMovePath( $cell );
         }
     }
 }

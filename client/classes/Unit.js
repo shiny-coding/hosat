@@ -7,7 +7,7 @@ class Unit {
         this.isPartlyMoved = false;
         // this.isSelected = false;
         this.movePath = undefined;
-        this.name = name;
+		this.team = team;
         this.pathMap = [];
         this.$element = $unit;
         this.$element.click( this.onUnitClick );
@@ -54,7 +54,7 @@ class Unit {
                     Unit.setUnitElementSize( unit );
                     Unit.setUnitElementPosition( unit );
                     Unit.setUnitBackground( unit );
-                    unit.$element.addClass( `${currentUnit.imageFileName}` );
+                    unit.$element.addClass( `${hero.image}` );
                     unitCounter++;
 
                     unit.$element.append( `<div class="healthbar">` );
@@ -84,22 +84,22 @@ class Unit {
      * @param {Unit} unit
      */
     static setUnitBackground( unit ) {
-        let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.png)';
-        $( '#unit-' + unit.id ).css( 'background-image', imagePath );
+        let imagePath = 'url(/images/heroes/' + unit.image + '.png)';
+        $( '#unit-' + unit._id ).css( 'background-image', imagePath );
 
         if ( unit.team == Game.game.TEAMS[ 0 ] ) {
-            $( '#unit-' + unit.id ).addClass( 'team0' );
+            $( '#unit-' + unit._id ).addClass( 'team0' );
         } else {
-            $( '#unit-' + unit.id ).addClass( 'team1' );
+            $( '#unit-' + unit._id ).addClass( 'team1' );
         }
     }
 
     /**
      * @param {Unit} unit
      */
-    static getUnitByElement( $unit ) {   
+    static getUnitByElement( $unit ) {
         for ( let unit of Unit.units ) {
-            if ( ( 'unit-' + unit.id ) == $unit.attr( 'id' ) ) {
+            if ( ( 'unit-' + unit._id ) == $unit.attr( 'id' ) ) {
                 return unit;
             }
         }
@@ -182,7 +182,7 @@ class Unit {
         //     $( '#unit-stats' ).html( '' );
         // }
 
-        // let imagePath = 'url(/images/heroes/' + unit.imageFileName + '.png)';
+        // let imagePath = 'url(/images/heroes/' + unit.image + '.png)';
         
         if ( unit ) {
             $( '#unit-stats' ).html( `

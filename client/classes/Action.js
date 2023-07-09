@@ -9,9 +9,9 @@ class Action {
     static actions = [];
     static $actions = $( '.action' );
 
-    static createActions( gameData ) {
+    static createActions( actionsDatas ) {
         let actions = [];
-        for ( let actionData of gameData.actions ) {
+        for ( let actionData of actionsDatas ) {
             let $element = $( `<div class="action" id="action-${actionData._id}">${actionData.name}</div>`);
             let action = new Action( $element );
 			Object.assign( action, actionData );
