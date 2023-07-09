@@ -1,0 +1,9 @@
+https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/
+
+1. download from here: https://www.mongodb.com/try/download/community
+
+
+
+---
+C:\Program Files\MongoDB\Server\6.0\data
+C:\Program Files\MongoDB\Server\6.0\logs
