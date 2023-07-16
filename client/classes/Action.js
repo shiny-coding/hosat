@@ -11,14 +11,18 @@ class Action {
 
     static createActions( actionsDatas ) {
         let actions = [];
+		let $unitActions = $( '#unit-actions' );
         for ( let actionData of actionsDatas ) {
-            let $element = $( `<div class="action" id="action-${actionData._id}">${actionData.name}</div>`);
+            let $element = $( `<div class="action" data-name="${actionData.name}">${actionData.name}</div>`);
+			$element.hide();
             let action = new Action( $element );
 			Object.assign( action, actionData );
 
             actions.push( action );
-            $( '#unit-actions' ).append( $element );
+			$unitActions.append( $element );
         }
+
+		$unitActions.hide();
 
         return actions;
     }

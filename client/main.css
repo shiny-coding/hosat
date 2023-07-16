@@ -137,8 +137,13 @@ html, body {
 .attribute img {
 	width: 3vmin;
 	height: 3vmin;
+	padding: 0 1vmin;
 }
 
 .healthbar {
 	/* border: 0.1vmin solid white; */
+}
+
+#unit-actions {
+	margin-top: 10px;
 }
