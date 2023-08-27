@@ -63,30 +63,29 @@ class Game {
             Game.game.turnCount = 1;
 
             for ( let unit of Unit.units ) {
-                unit.isCurrent = false;
-                unit.isPartlyMoved = false;
-                unit.isMoved = false;
+                unit.usedTurn = false;
                 unit.actionPoints = unit.defaultState.actionPoints; //TODO учесть заклинания
             }
         } else {
             Game.game.turnCount++;
 
-            for ( let unit of Unit.units ) {
-                if ( unit.actionPoints < unit.defaultState.actionPoints && unit.actionPoints > 0 ) {
-                    unit.isMoved = true;
-                }
+            // for ( let unit of Unit.units ) {
+            //     if ( unit.actionPoints < unit.defaultState.actionPoints && unit.actionPoints > 0 ) {
+            //         unit.usedTurn = true;
+            //     }
+            // }
 
-                if ( unit.isCurrent ) unit.isMoved = true;
-            }
+			// What about summoned units ?
+
+			let currentUnit = Unit.getCurrentUnit();
+			if ( currentUnit ) {
+				currentUnit.usedTurn = true;
+				currentUnit.actionPoints = currentUnit.defaultState.actionPoints;
+			}
         }
 
         Cell.$cells.removeClass( 'available-cell' );
         $( '#unit-stats' ).text( '' );
-
-        for ( let unit of Unit.units ) {
-            unit.isCurrent = false;
-            // unit.isSelected = false;
-        }
 
         if ( Game.game.currentTeam == Game.game.TEAMS[0] ) {
             Game.game.currentTeam = Game.game.TEAMS[1];

@@ -1,11 +1,11 @@
 class Cell {
     constructor(
         id,
-        indexes,
+        position,
         $cell
     ) {
         this.id = id;
-        this.indexes = indexes;
+        this.position = position;
         this.isAvailable = false;
         this.isPathCell = false;
         this.$element = $cell;
@@ -72,11 +72,17 @@ class Cell {
     onCellClick( event ) {
         if ( Game.game.teamChooseFase || Game.game.isSelectionBlocked ) return;
 
-        let unit = Unit.getCurrentUnit();
-        if ( !unit ) return;
-
-        let $cell = $( this );
+		let $cell = $( this );
         let cell = Cell.getCellByElement( $cell );
+
+		let canPerformAction = $cell.hasClass( 'attackable' ) || $cell.hasClass( 'enhanceable' )
+		if ( Action.selectedAction && canPerformAction ) {
+			Action.selectedAction.do( cell );
+			return;
+		}
+
+        let unit = Unit.selectedUnit;
+        if ( !unit ) return;
 
         if ( cell.isPathCell ) {
             unit.animateMoveByPath();

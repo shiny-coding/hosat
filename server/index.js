@@ -7,6 +7,10 @@ import * as dotenv from "dotenv";
 
 import morgan from 'morgan';
 import cors from 'cors';
+import fs from 'fs';
+
+import multer from 'multer';
+const upload = multer({ dest: "uploads/" });
 
 dotenv.config();
 
@@ -96,6 +100,30 @@ async function main() {
 		});
 
 		response.json( { result : updateOne.matchedCount != 0 } );
+	});
+
+	app.post( "/changeImage", upload.single( 'file' ), async ( request, response ) => {
+
+		try {
+
+			let targetPath = '../client/images/heroes/' + request.file.originalname;
+			if ( fs.existsSync( targetPath ) ) {
+				fs.unlinkSync( targetPath );
+			}
+			fs.renameSync( request.file.path, targetPath );
+			let { heroName } = request.body;
+
+			let updateOne = await heroesCollection.updateOne( { name: heroName }, {
+				$set : { image: request.file.originalname }
+			});
+
+			response.json( { result : updateOne.matchedCount != 0 } );
+
+		} catch ( exception ) { next( exception ); }
+	});
+
+	app.use( ( err, req, res, next ) => {
+		res.status(500).json( { error: true, err } );
 	});
 };
 

@@ -1,11 +1,8 @@
 class Unit {
-	constructor( indexes, team, $unit ) {
+	constructor( position, team, $unit ) {
 
-		this.indexes = indexes;
-		this.isCurrent = false; // for teamChooseFase
-		this.isMoved = false;
-		this.isPartlyMoved = false;
-		// this.isSelected = false;
+		this.position = position;
+		this.usedTurn = false;
 		this.movePath = undefined;
 		this.team = team;
 		this.pathMap = [];
@@ -14,12 +11,44 @@ class Unit {
 	}
 
 	static units = [];
-	static $units = $( '.unit' );
+	static unitsLibrary = [];
 
-	static createUnits( gameData, allActions ) {
-		let randomHeroesIndexes = shuffle( [ ...Array( gameData.heroes.length ).keys() ] );
+	static $units = $( '.unit' );
+	static selectedUnit = null;
+
+	static createUnit( hero, position, team ) {
+		let $element = $(
+			`<div class="unit team${team}">
+				<div class="health-bar"></div>
+				<div class="mana-bar"></div>
+			</div>` );
+		Board.$element.append( $element );
+
+		let actions = Action.actions.filter( action => hero.actions.includes( action.name ) )
+		actions = Action.actions;
+
+		let unit = new Unit( position, team, $element );
+		Object.assign( unit, hero, { actions } );
+		unit.defaultState = hero;
+
+		Unit.units.push( unit );
+		Unit.setUnitElementSize( unit );
+		Unit.setUnitElementPosition( unit );
+		Unit.setUnitBackground( unit );
+		unit.$element.attr( 'name', hero.name );
+		unit.updateBars();
+
+		$element.data( 'unit', unit );
+
+		return unit;
+	}
+
+	static createUnits( gameData ) {
+		let randomHeroesIndexes = [ ...Array( gameData.heroes.length ).keys() ]; //shuffle( [ ...Array( gameData.heroes.length ).keys() ] );
 		let randomHeroesTeams = shuffle( [  0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 ] );
 		let unitCounter = 0;
+
+		Unit.unitsLibrary = gameData.heroes;
 
 		for ( let row = 0; row < Board.ROWS; row++ ) {
 			for ( let column = 0; column < Board.COLUMNS; column++ ) {
@@ -29,38 +58,20 @@ class Unit {
 
 					let heroIndex = randomHeroesIndexes[ unitCounter ];
 					let hero = gameData.heroes[ heroIndex ];
-
-					Board.$element.append( `<div class="unit" id="unit-${hero._id}">` );
-					let heroIndexes = { x: column, y: row };
+					let heroPosition = { x: column, y: row };
 					let team = randomHeroesTeams[ unitCounter ];
-					let $element = $( `#unit-${hero._id}`);
+					let unit = Unit.createUnit( hero, heroPosition, team );
 
-					if ( team == 0 ) {
-						$element.addClass( 'team0' );
-					} else {
-						$element.addClass( 'team1' );
-					}
-
-					let actions = allActions.filter( action => hero.actions.includes( action.name ) )
-					actions = allActions;
-
-					let unit = new Unit( heroIndexes, team, $element );
-					Object.assign( unit, hero, { actions } );
-					unit.defaultState = hero;
-
-					Unit.units.push( unit );
-					Unit.setUnitElementSize( unit );
-					Unit.setUnitElementPosition( unit );
-					Unit.setUnitBackground( unit );
-					unit.$element.addClass( `${hero.image}` );
+					unit.healthPoints--;
 					unitCounter++;
-
-					unit.$element.append( `<div class="healthbar">` );
 				}
 			}
 		}
 
-		//Unit.selectTeam( Unit.units[ 0 ] );
+		Unit.selectTeam( Unit.units[ 0 ] );
+
+		Unit.units[ 0 ].$element.trigger( 'click' );
+		//Action.actions.find( a => a.name == 'Summon Wolf' ).$element.trigger( 'click' );
 	}
 
 	/**
@@ -76,7 +87,7 @@ class Unit {
 	 * @param {Unit} unit
 	 */
 	static setUnitElementPosition( unit ) {
-		let cellOffset = $( `#cell-${unit.indexes.x}-${unit.indexes.y}` ).offset();
+		let cellOffset = $( `#cell-${unit.position.x}-${unit.position.y}` ).offset();
 		unit.$element.offset( { top: cellOffset.top, left: cellOffset.left } );
 	}
 
@@ -84,62 +95,8 @@ class Unit {
 	 * @param {Unit} unit
 	 */
 	static setUnitBackground( unit ) {
-		let imagePath = 'url(/images/heroes/' + unit.image + '.png)';
-		$( '#unit-' + unit._id ).css( 'background-image', imagePath );
-
-		if ( unit.team == Game.game.TEAMS[ 0 ] ) {
-			$( '#unit-' + unit._id ).addClass( 'team0' );
-		} else {
-			$( '#unit-' + unit._id ).addClass( 'team1' );
-		}
-	}
-
-	/**
-	 * @param {Unit} unit
-	 */
-	static getUnitByElement( $unit ) {
-		for ( let unit of Unit.units ) {
-			if ( ( 'unit-' + unit._id ) == $unit.attr( 'id' ) ) {
-				return unit;
-			}
-		}
-	}
-
-	// /**
-	//  * @param {Unit} unit
-	//  */
-	// static getSelectedUnit() {
-	//     for ( let unit of Unit.units ) {
-	//         if ( unit.isSelected == true) {
-	//             return unit;
-	//         }
-	//     }
-
-	//     return false;
-	// }
-
-	/**
-	 * @param {Unit} unit
-	 */
-	static getCurrentUnit() {
-		for ( let unit of Unit.units ) {
-			if ( unit.isCurrent == true) {
-				return unit;
-			}
-		}
-
-		return false;
-	}
-
-	static isThereAPartlyMovedUnit() {
-		for ( let unit of Unit.units ) {
-			if (    unit.actionPoints < unit.defaultState.actionPoints &&
-					unit.actionPoints > 0 &&
-					!unit.isMoved )
-				return true;
-		}
-
-		return false;
+		let imagePath = 'url(/images/heroes/' + unit.image + ')';
+		unit.$element.css( 'background-image', imagePath );
 	}
 
 	static updateInfoPanel( unit ) {
@@ -179,9 +136,17 @@ class Unit {
 				let actionName = $action.data( 'name' );
 				let unitHasAction = !!unit.actions.find( action => action.name == actionName );
 				hasSomeAction |= unitHasAction;
-				$action.toggle( unitHasAction );
+				if ( unitHasAction ) {
+					$action.show();
+				} else {
+					$action.hide();
+				}
 			} );
-			$unitActions.toggle( hasSomeAction );
+			if ( hasSomeAction ) {
+				$unitActions.show();
+			} else {
+				$unitActions.hide();
+			}
 
 		} else {
 			$unitStats.html( '' );
@@ -195,7 +160,6 @@ class Unit {
 		Game.game.players[1].team = !team;
 
 		unit.showAvailableCells();
-		// unit.isCurrent = false;
 		Game.game.roundCount = 1;
 		Game.game.turnCount = 1;
 		Game.game.teamChooseFase = false;
@@ -203,6 +167,28 @@ class Unit {
 		unit.markPossibleTargets();
 
 		Unit.updateInfoPanel();
+	}
+
+	static getCurrentUnit() {
+		return Unit.units.find(
+				u => u.actionPoints < u.defaultState.actionPoints
+		);
+	}
+
+	updateBars() {
+		let $healthBar = this.$element.find( '.health-bar' );
+		$healthBar.empty();
+		for ( let i=0; i<this.defaultState.healthPoints; i++ ) {
+			let active = this.healthPoints > this.defaultState.healthPoints - i - 1 ? 'active' : '';
+			$healthBar.append( `<div class="health-point ${active}"></div>` );
+		}
+
+		let $manaBar = this.$element.find( '.mana-bar' );
+		$manaBar.empty();
+		for ( let i=0; i<this.defaultState.manaPoints; i++ ) {
+			let active = this.manaPoints > this.defaultState.manaPoints - i - 1 ? 'active' : '';
+			$manaBar.append( `<div class="mana-point ${active}"></div>` );
+		}
 	}
 
 	showAvailableCells() {
@@ -214,10 +200,10 @@ class Unit {
 		}
 
 		for ( let iteratedUnit of Unit.units ) {
-			this.pathMap[ iteratedUnit.indexes.x ][ iteratedUnit.indexes.y ] = -2;
+			this.pathMap[ iteratedUnit.position.x ][ iteratedUnit.position.y ] = -2;
 		}
 
-		this.pathMap[ this.indexes.x ][ this.indexes.y ] = 0;
+		this.pathMap[ this.position.x ][ this.position.y ] = 0;
 
 		for ( let i = 1; i <= this.actionPoints; i++ ) {
 			for ( let x = 0; x < Board.COLUMNS; x++ ) {
@@ -246,7 +232,7 @@ class Unit {
 		}
 
 		for ( let cell of Cell.cells ) {
-				if ( this.pathMap[ cell.indexes.x ][ cell.indexes.y ] > 0 ) {
+				if ( this.pathMap[ cell.position.x ][ cell.position.y ] > 0 ) {
 					cell.isAvailable = true;
 					cell.$element.addClass( 'available-cell' );
 				}
@@ -254,15 +240,15 @@ class Unit {
 	}
 
 	drawMovePath( $cell ) {
-		let cellIindexes = Cell.getCellByElement( $cell ).indexes;
-		let unitIndexes = this.indexes;
-		let preferHorizontalMovement = Math.abs( cellIindexes.x - unitIndexes.x ) < Math.abs( cellIindexes.y - unitIndexes.y );
-		let current = cellIindexes; //TODO remove current ???
-		let distance = this.pathMap[ cellIindexes.x ][ cellIindexes.y ];
+		let cellPosition = Cell.getCellByElement( $cell ).position;
+		let unitPosition = this.position;
+		let preferHorizontalMovement = Math.abs( cellPosition.x - unitPosition.x ) < Math.abs( cellPosition.y - unitPosition.y );
+		let current = cellPosition; //TODO remove current ???
+		let distance = this.pathMap[ cellPosition.x ][ cellPosition.y ];
 		let currentDistance = distance; //TODO ???
 		let movePath = [];
 
-		while ( current.x != unitIndexes.x || current.y != unitIndexes.y ) {
+		while ( current.x != unitPosition.x || current.y != unitPosition.y ) {
 			let stopSearch = false;
 			let bestCandidate = null;
 
@@ -293,14 +279,14 @@ class Unit {
 
 		movePath.reverse();
 		movePath.shift();
-		movePath.push( cellIindexes );
+		movePath.push( cellPosition );
 		this.movePath = movePath;
 
 		for ( let row = 0; row < Board.ROWS; row++ ) {
 			for ( let column = 0; column < Board.COLUMNS; column++ ) {
 				for ( let step of movePath ) {
 					for ( let cell of Cell.cells ) {
-						if ( cell.indexes.x == step.x && cell.indexes.y == step.y ) {
+						if ( cell.position.x == step.x && cell.position.y == step.y ) {
 							cell.isPathCell = true;
 							cell.$element.addClass( 'path-cell' );
 						}
@@ -311,8 +297,8 @@ class Unit {
 	}
 
 	animateMoveByPath() {
-		let nextCellIndexes = this.movePath.shift();
-		let $cell = $( `#cell-${nextCellIndexes.x}-${nextCellIndexes.y}` );
+		let nextCellPosition = this.movePath.shift();
+		let $cell = $( `#cell-${nextCellPosition.x}-${nextCellPosition.y}` );
 		let cellOffset = $cell.offset();
 		this.actionPoints--;
 		Game.game.$end.removeClass( 'end-red' );
@@ -327,7 +313,7 @@ class Unit {
 			duration: 500,
 			easing: "linear",
 			done: function() {
-				this.indexes = nextCellIndexes;
+				this.position = nextCellPosition;
 				Cell.$cells.removeClass( 'available-cell' );
 				this.showAvailableCells();
 				Unit.updateInfoPanel();
@@ -339,8 +325,8 @@ class Unit {
 				} else {
 					Game.game.isSelectionBlocked = false;
 					if ( this.actionPoints == 0 ) {
-						this.isMoved = true;
-						this.$element.addClass( 'moved' );
+						this.usedTurn = true;
+						this.$element.addClass( 'usedTurn' );
 						Game.game.$end.removeClass( 'end-red' );
 						Game.game.$end.removeClass( 'end-yellow' );
 						Game.game.$end.addClass( 'end-green' );
@@ -357,10 +343,11 @@ class Unit {
 			unit.$element.removeClass( 'attackable' );
 		}
 
-		for ( let unit of Unit.units ) {
-			if ( this.isCurrent && ( unit.team != this.team ) ) {
-				let dx = Math.abs( unit.indexes.x - this.indexes.x );
-				let dy = Math.abs( unit.indexes.y - this.indexes.y );
+		if ( this == Unit.selectedUnit ) {
+			for ( let unit of Unit.units ) {
+				if ( unit.team == this.team ) continue;
+				let dx = Math.abs( unit.position.x - this.position.x );
+				let dy = Math.abs( unit.position.y - this.position.y );
 				let distance = dx + dy;
 				if ( this.hitRange >= distance ) {
 					unit.$element.addClass( 'attackable' );
@@ -369,88 +356,34 @@ class Unit {
 		}
 	}
 
-	onUnitClick( event ) {
+	onUnitClick() {
 		if ( Game.game.isSelectionBlocked ) return;
+
+		let $unit = $( this );
+		let unit = $unit.data( 'unit' );
+
+		if ( Action.selectedAction && Action.selectedAction.isActive() ) {
+			if ( $unit.hasClass( 'attackable' ) || $unit.hasClass( 'enhanceable' ) ) {
+				Action.selectedAction.do( unit );
+			}
+			return;
+		}
 
 		for ( let unit of Unit.units ) {
 			unit.$element.removeClass( 'attackable' );
+			unit.$element.removeClass( 'enhanceable' );
 		}
 
-		let $unit = $( this );
-		let unit = Unit.getUnitByElement( $unit );
-		// for ( let unit of Unit.units ) {
-		//     unit.isSelected = false;
-		//     unit.$element.removeClass( 'attackable' );
-		// }
-		// unit.isSelected = true;
-
-		// if ( Game.game.teamChooseFase ) {
-		//     if ( unit.isCurrent ) {
-		//         let team = unit.team;
-
-		//         if ( team == Game.game.TEAMS[0] ) {
-		//             Game.game.currentTeam = Game.game.TEAMS[0];
-		//             Game.game.currentPlayerId = 0;
-		//             Game.game.players[0].team = Game.game.TEAMS[0];
-		//             Game.game.players[1].team = Game.game.TEAMS[1];
-		//         } else {
-		//             Game.game.currentTeam = Game.game.TEAMS[1];
-		//             Game.game.currentPlayerId = 1;
-		//             Game.game.players[0].team = Game.game.TEAMS[1];
-		//             Game.game.players[1].team = Game.game.TEAMS[0];
-		//         }
-
-		//         unit.showAvailableCells();
-		//         // unit.isCurrent = false;
-		//         Game.game.roundCount = 1;
-		//         Game.game.turnCount = 1;
-		//         Game.game.teamChooseFase = false;
-		//         Game.game.updateTurnsInfoPanel();
-		//         // Unit.updateInfoPanel();
-		//         unit.markPossibleTargets();
-		//     } else {
-		//         for ( let unit of Unit.units ) unit.isCurrent = false;
-		//         unit.isCurrent = true;
-		//         // return;
-		//     }
-
-		//     Unit.updateInfoPanel();
-		//     return;
-		// }
-
-		// unit.isCurrent = true;  // ???????????????????????????????????!!!!!!!!!!!!!!!!!!!!!!!!!!!! isCurrent or isSelected
+		Unit.selectedUnit = unit;
 		Unit.updateInfoPanel( unit );
 
-		// for ( let unit of Unit.units ) {
-		//     unit.isSelected = false;
-		//     unit.$element.removeClass( 'attackable' );
-		// }
-
-		let isThereAPartlyMovedUnit = Unit.isThereAPartlyMovedUnit();
-
-		if ( Game.game.currentTeam == unit.team
-				&& !isThereAPartlyMovedUnit
-				&& !unit.isMoved ) {
+		let currentUnit = Unit.getCurrentUnit();
+		if ( Game.game.currentTeam == unit.team && !currentUnit && !unit.usedTurn ) {
 			Cell.$cells.removeClass( 'available-cell' );
 			unit.showAvailableCells();
-			for ( let unit of Unit.units ) unit.isCurrent = false;
-			unit.isCurrent = true;
+
+			//unit.$element.addClass( 'current' );
 			unit.markPossibleTargets();
 		}
-
-		// if ( unit.hasClass( 'attackable' )
-		//         && Game.game.currentTeam != unit.team ) {
-
-		//     let currentUnitDamage = undefined;
-
-		//     for ( let unit of Unit.units ) {
-		//         if ( unit.isCurrent == true ) {
-		//             currentUnitDamage = unit.damageCurrent;
-		//         }
-		//     }
-
-		//     unit.hpCurrent -= currentUnitDamage;
-		//     Unit.updateInfoPanel();
-		// }
 	}
 }
