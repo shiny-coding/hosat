@@ -23,5 +23,6 @@
   "background_color": "#272727",
   "display": "fullscreen",
   "scope": "/",
-  "theme_color": "#272727"
+  "theme_color": "#272727",
+  "orientation": "landscape"
 }
