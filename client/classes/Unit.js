@@ -74,11 +74,18 @@ class Unit {
 		//Action.actions.find( a => a.name == 'Summon Wolf' ).$element.trigger( 'click' );
 	}
 
+	static resizeUnits() {
+		for ( let unit of Unit.units ) {
+			Unit.setUnitElementSize( unit );
+			Unit.setUnitElementPosition( unit );
+		}
+	}
+
 	/**
 	 * @param {Unit} unit
 	 */
 	static setUnitElementSize( unit ) {
-		let size = vmin2px( 100 / Board.ROWS );
+		let size = vmin2px( 100 / Board.ROWS, 100 / Board.COLUMNS );
 		unit.$element.css( 'width', size + 'px' );
 		unit.$element.css( 'height', size + 'px' );
 	}

@@ -10,14 +10,14 @@ function px2vmin( px ) {
 	return vmin;
 }
 
-function vmin2px( vmin ) {
+function vmin2px( vminY, vminX ) {
 	let windowWidtht = $( window ).width();
 	let windowHeight = $( window ).height();
 	let px;
 	if ( windowWidtht >= windowHeight ) {
-		px = vmin * windowHeight / 100;
+		px = vminY * windowHeight / 100;
 	} else {
-		px = vmin * windowWidtht / 100;
+		px = vminX * windowWidtht / 100;
 	}
 	return px;
 }

@@ -12,8 +12,15 @@ async function requestGameData() {
 	Unit.createUnits( gameData, actions );
 }
 
+$( window ).resize( function() {
+	Cell.resizeCells();
+	Unit.resizeUnits();
+} );
+
 requestGameData();
 
 Game.createGame();
 Cell.createCells();
 
+console.log( 'window.innerHeight ' + window.innerHeight );
+console.log( 'document.body.clientHeight ' + document.body.clientHeight );

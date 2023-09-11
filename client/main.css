@@ -19,14 +19,12 @@ html, body {
 	/* border: 0.1vmin solid #cdcdcd; */
 	/* background-color: #dcdcdc;	 */
 	/* background-color: #ababab;	 */
-	background-color: #ababab;	
-
+	background-color: #ababab;
 	/* border: 0.1vmin solid 8b8b8b; */
-	border: 0.1vmin solid #8b8b8b;
-
+	/* border: 0.1vmin solid #8b8b8b; */
 	box-sizing: border-box;
 	user-select: none;
-	font-size: small; 
+	font-size: small;
 }
 .available-cell {
 	background-color: #4176a1;

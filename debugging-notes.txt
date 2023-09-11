@@ -1,0 +1,7 @@
+
+1. chrome://inspect/#devices
+2. Port forwarding
+	8081   :    hosat.com:80
+	3002   :    localhost:3002
+
+

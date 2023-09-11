@@ -38,25 +38,23 @@ class Cell {
                 );
 
                 Cell.cells.push( cell );
-                let cellSize = vmin2px( 100 / Board.ROWS );
-                cell.$element.css( 'width', cellSize + 'px' );
-                cell.$element.css( 'height', cellSize + 'px' );
-                Cell.setCellElementSize( cell );
                 cellCounter++;
             }
         }
 
+		Cell.resizeCells();
+
         Cell.$cells = $( '.cell' );
     }
 
-    /**
-     * @param {Cell} cell
-     */
-    static setCellElementSize( cell ) {
-        let size = vmin2px( 100 / Board.ROWS );
-        cell.$element.css( 'width', size + 'px' );
-        cell.$element.css( 'height', size + 'px' );
-    }
+	static resizeCells() {
+		for ( let cell of Cell.cells ) {
+			let cellSize = vmin2px( 100 / Board.ROWS, 100 / Board.COLUMNS );
+			cell.$element.css( 'width', cellSize + 'px' );
+			cell.$element.css( 'height', cellSize + 'px' );
+		}
+	}
+
 
     /**
      * @param {Cell} cell

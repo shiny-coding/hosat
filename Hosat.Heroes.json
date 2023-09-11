@@ -1,0 +1,169 @@
+[{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e087277f"
+  },
+  "name": "Astral Mage",
+  "image": "astral_mage_615_615.png",
+  "damage": 1,
+  "hitRange": 3,
+  "manaPoints": 15,
+  "actionPoints": 2,
+  "healthPoints": 4,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872780"
+  },
+  "name": "Air Mage",
+  "image": "air_mage_600_600.png",
+  "damage": 2,
+  "hitRange": 5,
+  "manaPoints": 15,
+  "actionPoints": 5,
+  "healthPoints": 5,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872781"
+  },
+  "name": "Fire Mage",
+  "image": "fire_mage_600_600.png",
+  "damage": 2,
+  "hitRange": 4,
+  "manaPoints": 15,
+  "actionPoints": 4,
+  "healthPoints": 5,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872782"
+  },
+  "name": "Water Mage",
+  "image": "water_mage_980_980.png",
+  "damage": 2,
+  "hitRange": 3,
+  "manaPoints": 15,
+  "actionPoints": 4,
+  "healthPoints": 5,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872783"
+  },
+  "name": "Earth Mage",
+  "image": "earth_mage_600_600.png",
+  "damage": 2,
+  "hitRange": 3,
+  "manaPoints": 15,
+  "actionPoints": 4,
+  "healthPoints": 5,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872784"
+  },
+  "name": "White Mage",
+  "image": "white_mage_600_600.png",
+  "damage": 2,
+  "hitRange": 3,
+  "manaPoints": 15,
+  "actionPoints": 4,
+  "healthPoints": 6,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872785"
+  },
+  "name": "Black Mage",
+  "image": "black_mage_615_615.png",
+  "damage": 2,
+  "hitRange": 3,
+  "manaPoints": 15,
+  "actionPoints": 4,
+  "healthPoints": 6,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872786"
+  },
+  "name": "Summoner Mage",
+  "image": "summoner_mage_600_600.png",
+  "damage": 1,
+  "hitRange": 3,
+  "manaPoints": 15,
+  "actionPoints": 5,
+  "healthPoints": 4,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872787"
+  },
+  "name": "Bowman",
+  "image": "bowman_800_795.png",
+  "damage": 4,
+  "hitRange": 6,
+  "manaPoints": 5,
+  "actionPoints": 4,
+  "healthPoints": 8,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872788"
+  },
+  "name": "Shieldman",
+  "image": "shieldman_600_600.png",
+  "damage": 3,
+  "hitRange": 1,
+  "manaPoints": 5,
+  "actionPoints": 2,
+  "healthPoints": 14,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e0872789"
+  },
+  "name": "Swordman",
+  "image": "swordman_800_771.png",
+  "damage": 5,
+  "hitRange": 1,
+  "manaPoints": 5,
+  "actionPoints": 3,
+  "healthPoints": 10,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64a0fd4e418d5c52e087278a"
+  },
+  "name": "Daggerman",
+  "image": "daggerman_1280_1280.png",
+  "damage": 3,
+  "hitRange": 1,
+  "manaPoints": 5,
+  "actionPoints": 5,
+  "healthPoints": 7,
+  "actions": []
+},
+{
+  "_id": {
+    "$oid": "64e1a22a34661ee788b6ff0b"
+  },
+  "name": "Wolf",
+  "image": "wolf_600_600.png",
+  "damage": 3,
+  "hitRange": 1,
+  "manaPoints": 0,
+  "actionPoints": 2,
+  "healthPoints": 4,
+  "actions": []
+}]

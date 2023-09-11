@@ -1,0 +1,180 @@
+[{
+  "_id": {
+    "$oid": "64a0fec3418d5c52e087278d"
+  },
+  "area": null,
+  "name": "Fury",
+  "type": "Enhancement",
+  "image": null,
+  "damage": null,
+  "effect": null,
+  "impact": 3,
+  "target": "Ally",
+  "distance": 6,
+  "duration": 3,
+  "attribute": "damage",
+  "actionPoints": 3,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64a0fec3418d5c52e087278e"
+  },
+  "area": null,
+  "name": "Rock armor",
+  "type": "Enhancement",
+  "image": null,
+  "damage": null,
+  "effect": null,
+  "impact": 5,
+  "target": "Ally",
+  "distance": 6,
+  "duration": 3,
+  "attribute": "hpDefault",
+  "actionPoints": 2,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64b8bfd78a2040e04c42c8cd"
+  },
+  "area": null,
+  "name": "Heal",
+  "type": "Enhancement",
+  "image": "heal_250_248.png",
+  "effect": null,
+  "impact": 3,
+  "target": "Ally",
+  "distance": 15,
+  "attribute": "healthPoints",
+  "actionPoints": 1,
+  "manaPoints": 1,
+  "power": 3
+},
+{
+  "_id": {
+    "$oid": "64b8c0138a2040e04c42c8ce"
+  },
+  "area": 1,
+  "name": "Fireball",
+  "type": "Damage",
+  "image": "fireball_600_600.png",
+  "damage": 3,
+  "effect": null,
+  "impact": 3,
+  "target": [
+    "Ally",
+    "Cell",
+    "Enemy"
+  ],
+  "distance": 15,
+  "attribute": "damage",
+  "actionPoints": 3,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64b8c03e8a2040e04c42c8cf"
+  },
+  "area": null,
+  "name": "Сhain lightning",
+  "type": "Damage",
+  "image": null,
+  "damage": 5,
+  "effect": null,
+  "impact": 3,
+  "target": "Enemy",
+  "distance": 6,
+  "attribute": "damage",
+  "actionPoints": 2,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64b8c04f8a2040e04c42c8d0"
+  },
+  "area": null,
+  "name": "Burn",
+  "type": "Damage",
+  "image": "burn_549_800.png",
+  "damage": 1,
+  "effect": null,
+  "impact": 3,
+  "target": "Enemy",
+  "distance": 6,
+  "attribute": "damage",
+  "actionPoints": 3,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64b8c0798a2040e04c42c8d1"
+  },
+  "area": null,
+  "name": "Wind blow",
+  "type": "Enhancement",
+  "image": null,
+  "damage": null,
+  "effect": null,
+  "impact": 3,
+  "target": "Ally",
+  "distance": 6,
+  "duration": 3,
+  "attribute": "damage",
+  "actionPoints": 3,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64b8c0888a2040e04c42c8d2"
+  },
+  "area": null,
+  "name": "Teleportation",
+  "type": "Enhancement",
+  "image": null,
+  "damage": null,
+  "effect": null,
+  "impact": 3,
+  "target": "Ally",
+  "distance": 6,
+  "duration": 3,
+  "attribute": "damage",
+  "actionPoints": 3,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64b8c0968a2040e04c42c8d3"
+  },
+  "area": null,
+  "name": "Wall",
+  "type": "Enhancement",
+  "image": "wall_800_800.png",
+  "damage": null,
+  "effect": null,
+  "impact": 3,
+  "target": "Ally",
+  "distance": 6,
+  "duration": 3,
+  "attribute": "damage",
+  "actionPoints": 3,
+  "manaPoints": 1
+},
+{
+  "_id": {
+    "$oid": "64b8c0ac8a2040e04c42c8d4"
+  },
+  "area": null,
+  "name": "Summon Wolf",
+  "type": "Enhancement",
+  "image": "wolf_600_600.png",
+  "damage": 1,
+  "effect": null,
+  "impact": 3,
+  "target": "Empty_Cell",
+  "distance": 6,
+  "duration": 3,
+  "attribute": "damage",
+  "actionPoints": 1,
+  "manaPoints": 1
+}]
